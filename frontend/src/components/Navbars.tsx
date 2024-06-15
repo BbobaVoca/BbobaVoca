@@ -71,7 +71,7 @@ function Navbars() {
           className="ml-20 mr-2 h-6 sm:h-9"
           src=""
         />
-        <span className="self-center whitespace-nowrap font-seoleim text-xl dark:text-white">
+        <span className="self-center whitespace-nowrap font-monggeul font-bold text-xl dark:text-white">
           뽑아보카
         </span>
       </Navbar.Brand>
