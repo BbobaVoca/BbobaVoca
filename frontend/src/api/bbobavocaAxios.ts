@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, isAxiosError } from "axios";
-import { EmailResponse, LoginResponse, SuccessResponse, User, Users } from "../interfaces/Interfaces";
+import { CheckBooleanResponse, LoginResponse, SuccessResponse, User, Users } from "../interfaces/Interfaces";
 
 const possgAxios = axios.create({
     baseURL: "http://35.192.203.252:8080/voca",
@@ -58,7 +58,7 @@ export const login = async (
 // 이메일 중복확인
 export const checkEmail = async (
     email : string
-): Promise<AxiosResponse<EmailResponse, any> | null> => {
+): Promise<AxiosResponse<CheckBooleanResponse, any> | null> => {
     try {
         const response = await possgAxios.post(
             "members/check-email",
@@ -66,7 +66,7 @@ export const checkEmail = async (
         );
         return response;
     } catch (error) {
-        if(isAxiosError<EmailResponse>(error)) {
+        if(isAxiosError<CheckBooleanResponse>(error)) {
             console.log(`Error: ${error.response?.status} ${error.message}`);
             return null;
         } else {
