@@ -4,6 +4,7 @@ import NotFound from "./components/NotFound";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import VocaPage from "./pages/VocaPage";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
         {
           path: "register",
           element: <Register />,
+        },
+        {
+          path: "/:category/:description",
+          element: <VocaPage />,
         },
       ],
     },

@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { VocaThemes } from "../interfaces/Interfaces";
 import { getMyTheme } from "../api/bbobavoca/bbobavocaAxios";
+import ThemeCard from "../components/ThemeCard";
+import { pastelColors } from "../styles/pasterColors";
+
 
 const Home = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [showHeroSection, setShowHeroSection] = useState(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [themes, setThemes] = useState<VocaThemes>([]);
+  const [themes, setThemes] = useState<VocaThemes>([{ category: "과일", description: "test111" }, { category: "동물", description: "test222" }, { category: "애니메이션", description: "test333" }, { category: "감정", description: "test444" }]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const popupRef = useRef<HTMLDivElement>(null);
@@ -88,7 +91,7 @@ const Home = () => {
         </>
     ) : (
         <>
-        <div className='flex w-screen justify-center self-stretch'>
+        <div className='flex w-screen h-screen justify-center self-stretch bg-light-green'>
           <div className='flex flex-1 flex-col md:flex-row box-border max-w-screen-xl items-center justify-start px-5 md:px-20 xl:px-10 pt-20 pb-20'>
               <div className='flex-1 flex-grow-4 self-start max-w-none prose-lg mx-4 '>
                   <div id="content-container" className='mx-auto md:w-[80%]'>
@@ -104,13 +107,14 @@ const Home = () => {
                     {themes.length === 0 ? (
                         <div className="bg-gray-50 border border-gray-200 text-xs font-PretendardVariable font-normal rounded-md mt-3 px-3 py-5 mx-3 text-center">단어 카드가 없습니다.</div>
                     ) : (
-                        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 pt-5'>
+                        <div className='grid grid-cols-1 md:grid-cols-4 gap-1 pt-5'>
                             {themes.map((theme, index) => (
-                                <div key={index} className='flex flex-col w-full p-2'>
-                                    {/* <ThemeFolder
+                                <div key={index} className='flex flex-col w-full'>
+                                    <ThemeCard
                                         category={theme.category}
                                         description={theme.description}
-                                    /> */}
+                                        color={pastelColors[Math.floor(Math.random() * pastelColors.length)]}
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -120,7 +124,7 @@ const Home = () => {
           </div>
         </div>
         </>
-    )};
+    )}
     {showPopup && (
       <>
         <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-60 flex items-center justify-center">
