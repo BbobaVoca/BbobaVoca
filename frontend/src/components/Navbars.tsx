@@ -3,8 +3,8 @@ import { Button, Navbar } from "flowbite-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from 'recoil';
 import { savedUserState } from "../atom";
-import { user } from "../api/bbobavocaAxios";
 import { getUserFromLocalStorage, saveUserToLocalStorage, removeUserFromLocalStorage } from "../utils/localStorage";
+import { user } from "../api/user/userAxios";
 
 
 const theme = {
