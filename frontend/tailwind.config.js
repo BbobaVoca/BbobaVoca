@@ -7,6 +7,7 @@ module.exports = {
     extend: {
       colors: {
         'main': '#1CC500',
+        'light-green': '#EEF6EC'
       },
       fontFamily: {
         'PretendardVariable': ['PretendardVariable'],
