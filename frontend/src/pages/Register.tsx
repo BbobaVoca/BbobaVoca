@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { checkEmail, register } from '../api/bbobavocaAxios';
+import { checkEmail, register } from '../api/user/userAxios';
 
 
 const Register = () => {

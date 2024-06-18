@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../api/bbobavocaAxios';
+import { login } from '../api/user/userAxios';
 
 const Login = () => {
   const [email, setEmail] = useState<string>('');
