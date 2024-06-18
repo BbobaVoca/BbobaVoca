@@ -11,11 +11,19 @@ export interface CheckBooleanResponse {
     isExist: boolean;
 }
 
+export interface RegisterInfo {
+    email: string;
+    password: string;
+    nickname: string;
+    baby: Baby[];
+    credit: number;
+}
+
 export interface MyUser {
     email: string;
     nickname: string;
-    profile: string;
     baby: Baby[];
+    credit: number;
 }
 
 export interface User {
@@ -66,9 +74,7 @@ export interface VocaThemeCard {
 export interface VocaCard {
     src: string;
     kor: string;
-    eng: string;
-    jap: string;
-    chi: string;
+    other: string;
     example: string;
 }
 
