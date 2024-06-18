@@ -1,21 +1,15 @@
 import { AxiosResponse } from "axios";
-import { CheckBooleanResponse, LoginResponse, SuccessResponse, User, Users } from "../../interfaces/Interfaces";
+import { CheckBooleanResponse, LoginResponse, RegisterInfo, SuccessResponse, User, Users } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 
-// 회원가입 (수정 필요)
+// 회원가입
 export const register = async (
-    email : string,
-    password : string,
-    nickname : string,
+    registerInput: RegisterInfo
 ): Promise<AxiosResponse<SuccessResponse> | null> => {
     const response = await bobbaVocaAxios.post(
         "members/signup",
-        {
-            email,
-            password,
-            nickname,
-        }
+        { registerInput }
     );
     return response;
 };

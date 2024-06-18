@@ -120,7 +120,15 @@ const Register = () => {
     e.preventDefault();
 
     if (isValid) {
-      const registerResult = await register(signupForm.email, signupForm.password, signupForm.nickname);
+      const registerInfos = {
+        email: signupForm.email,
+        password: signupForm.password,
+        nickname: signupForm.nickname,
+        baby: [{name: "test1", profile: "src" }],
+        credit: 0
+      }
+
+      const registerResult = await register(registerInfos);
 
       if (registerResult) {
         navigate('/login');
