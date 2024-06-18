@@ -22,8 +22,11 @@ code {
 }
 
 @font-face {
-  font-family: "monggeul";
-  src: url('./styles/font/HakgyoansimMonggeulmonggeulOTFR.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
+  font-family: "Ownglyph_Siwoo";
+  src: url("./styles/font/Ownglyph_Siwoo.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Uhbeezziba";
+  src: url('./styles/font/UhBeeZZIBA-Regular.ttf') format('truetype');
 }
