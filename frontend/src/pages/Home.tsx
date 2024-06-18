@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/HeroSection";
 import { VocaThemes } from "../interfaces/Interfaces";
 import { getMyTheme } from "../api/bbobavoca/bbobavocaAxios";
@@ -16,25 +15,20 @@ const Home = () => {
 
   const popupRef = useRef<HTMLDivElement>(null);
   const token = localStorage.getItem('token');
-  const navigate = useNavigate();
 
-  const fetchFolders = async () => {
+  const fetchCards = async () => {
     if (token) {
-        const folderResponse = await getMyTheme(token);
-        if (folderResponse && folderResponse.data) {
-            console.log(folderResponse.data);
+        const cardResponse = await getMyTheme(token);
+        if (cardResponse && cardResponse.data) {
+            const cardsArray = cardResponse.data;
 
-            const foldersArray = folderResponse.data;
-            console.log("Extracted foldersArray:", foldersArray);
-
-            if (Array.isArray(foldersArray)) {
-                const updatedFolders = foldersArray.map(folders => {
-                    return { category: folderResponse.data.category, description: folderResponse.data.description };
+            if (Array.isArray(cardsArray)) {
+                const updatedCards = cardsArray.map(card => {
+                    return { category: card.category, description: card.description };
                 });
-
-                setThemes(updatedFolders);
+                setThemes(updatedCards);
             } else {
-                console.error('foldersArray is not an array:', foldersArray);
+                console.error('cardsArray is not an array:', cardsArray);
             }
         }
     }
@@ -53,14 +47,15 @@ const Home = () => {
   useEffect(() => {
     if (token) {
       setLoggedIn(true);
+      fetchCards();
     } else {
       setLoggedIn(false);
+      // setThemes([]);
     }
 
     if (loggedIn) {
       setShowHeroSection(false);
     }
-    fetchFolders();
   }, [loggedIn, token]);
 
   useEffect(() => {
