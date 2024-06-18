@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { CheckBooleanResponse, LoginResponse, RegisterInfo, SuccessResponse, User, Users } from "../../interfaces/Interfaces";
+import { CheckBooleanResponse, LoginResponse, MyUser, RegisterInfo, SuccessResponse, Users } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 
@@ -63,7 +63,7 @@ export const users = async (
 // 내 정보 반환
 export const user = async (
     token: string
-): Promise<AxiosResponse<User> | null> => {
+): Promise<AxiosResponse<MyUser> | null> => {
     const response = await bobbaVocaAxios.get(
         "members/member",
         { headers: { Authorization: `Bearer ${token}` }}
