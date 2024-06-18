@@ -9,8 +9,8 @@ import { user } from "../api/user/userAxios";
 
 const theme = {
   active: {
-    on: "text-black tracking-tighter font-PretendardVariable font-semibold dark:text-white md:bg-transparent md:text-black",
-    off: "border-b border-gray-100 text-gray-500 tracking-tighter font-PretendardVariable font-semibold dark:border-gray-700 dark:text-gray-400 md:border-0 md:hover:bg-transparent dark:hover:text-white md:hover:text-black md:dark:hover:text-white",
+    on: "text-black font-semibold dark:text-white md:bg-transparent md:text-black",
+    off: "border-b border-gray-100 text-gray-500 font-semibold dark:border-gray-700 dark:text-gray-400 md:border-0 md:hover:bg-transparent dark:hover:text-white md:hover:text-black md:dark:hover:text-white",
   },
 };
 
@@ -25,16 +25,18 @@ function Navbars() {
 
   const handleLoginButtonClick = () => {
     if (loggedIn) {
-      localStorage.removeItem('token');
-      removeUserFromLocalStorage();
-      setUserInfo(null);
-      setLoggedIn(false);
+      // 내 정보창 생기기
+      // 새로 만드는 내 정보창 로그아웃에 해당 내용 넣기
+      // localStorage.removeItem('token');
+      // removeUserFromLocalStorage();
+      // setUserInfo(null);
+      // setLoggedIn(false);
     } else {
       navigate("/login");
     }
   };
 
-  const getUserNickname = async () => {
+  const getUserInfo = async () => {
     if (token && !userInfo) {
       const userInfoResult = await user(token);
       if (userInfoResult?.data) {
@@ -52,7 +54,7 @@ function Navbars() {
       if (storedUser) {
         setUserInfo(storedUser);
       } else {
-        getUserNickname();
+        getUserInfo();
       }
     } else {
       setLoggedIn(false);
@@ -64,38 +66,49 @@ function Navbars() {
   };
 
   return (
-    <Navbar border fluid className="fixed left-0 right-0 top-0 z-50">
+    <Navbar border fluid className="fixed left-0 right-0 top-0 z-50 py-5">
       <Navbar.Brand href="/">
-        <img
-          alt="Logo"
-          className="ml-20 mr-2 h-6 sm:h-9"
-          src=""
-        />
-        <span className="self-center whitespace-nowrap font-uhbeezziba text-main text-2xl dark:text-white">
+        <span className="self-center whitespace-nowrap font-uhbeezziba text-main text-3xl ml-12 dark:text-white">
           뽑아보카
         </span>
       </Navbar.Brand>
-      <div className="flex items-center mr-auto gap-x-4 ml-12 list-none">
+      <div className="flex items-center mr-auto gap-x-14 ml-28 list-none">
         <Navbar.Link theme={theme} href="/" className={getButtonStyle("/")}>
-          메인
+          단어보기
+        </Navbar.Link>
+        <Navbar.Link theme={theme} href="/voca-village" className={getButtonStyle("/voca-village")}>
+          단어마을
         </Navbar.Link>
       </div>
-      <div className="flex items-center ml-auto gap-x-4 mr-10 list-none">
-        {loggedIn && (
-          <div className="flex items-center font-PretendardVariable list-none">
-              <div className='flex w-full font-bold'>{userInfo?.nickname}</div>&nbsp;
-              <span className='list-none font-semibold'>님</span>&nbsp;&nbsp;
+      <div className="flex items-center ml-auto gap-x-4 mr-8 list-none">
+        {loggedIn ? (
+          <div className="flex items-center list-none">
+            <div className="flex w-full">
+              <img
+                  className="w-6 mr-1"
+                  alt='credit'
+                  src="img/credit.png"
+              />
+              <p>{userInfo?.credit}</p>
+            </div>
+            <div className="rounded-full overflow-hidden w-24">
+              <img
+                  className="h-full w-full object-cover rounded-full"
+                  alt='profile'
+                  src={userInfo?.baby[0].profile}
+              />
+            </div>
+            <div className='flex w-full ml-3 tracking-wide'>
+              <p className="font-semibold text-black">{userInfo?.nickname}
+                <span className='font-medium'>님</span>
+              </p>
+            </div>     
           </div>
-        )}
-        <Navbar.Link
-          theme={theme}
-          href="/login"
-          className={getButtonStyle("/login")}
-        >
-          <Button color="light" className={`font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 md:dark:hover:bg-transparent ${activeLink === 'login' ? 'active' : ''}`} onClick={handleLoginButtonClick}>
-            {loggedIn ? '로그아웃' : '로그인'}
+        ) : (
+          <Button color="light" className={`font-semibold hover:bg-green-600 rounded-3xl px-5 mr-2 bg-main text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent ${activeLink === 'login' ? 'active' : ''}`} onClick={handleLoginButtonClick}>
+            로그인
           </Button>
-        </Navbar.Link>
+        )}
       </div>
     </Navbar>
   );

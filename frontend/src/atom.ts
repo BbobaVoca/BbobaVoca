@@ -1,7 +1,7 @@
 import { atom } from "recoil";
-import { User } from "./interfaces/Interfaces";
+import { MyUser } from "./interfaces/Interfaces";
 
-export const savedUserState = atom<User | null>({
+export const savedUserState = atom<MyUser | null>({
     key: "savedUserState",
     default: null,
   })
