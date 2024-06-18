@@ -26,7 +26,7 @@ function HeroSection() {
                         className="rounded-lg bg-white py-4 px-14 font-PretendardVariable text-2xl font-semibold leading-tight text-black shadow-md transition duration-200 ease-in-out cursor-pointer"
                         onClick={moveLoginBtn}
                     >
-                        메인페이지 바로가기
+                        지금 바로 시작하기
                     </button>
                 </div>
             </div>
