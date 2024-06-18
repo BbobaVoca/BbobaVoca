@@ -4,7 +4,16 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'main': '#1CC500',
+      },
+      fontFamily: {
+        'PretendardVariable': ['PretendardVariable'],
+        'ownglyph': ['Ownglyph_Siwoo'],
+        'uhbeezziba' : ['Uhbeezziba'],
+      }
+    },
   },
   plugins: [],
 }
