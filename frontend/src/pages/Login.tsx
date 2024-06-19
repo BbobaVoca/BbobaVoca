@@ -34,72 +34,77 @@ const Login = () => {
 
   return (
     <>
-    <div className='main-font'>
-    <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <div className="w-full bg-white rounded-lg md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+    <div className='bg-main w-screen h-screen'>
+      <section className="dark:bg-gray-900">
+        <div className='flex justify-between pt-20 px-20'>
+          <div className='text-white text-3xl leading-10 mt-20'>
+            <p className='px-10'>
+              안녕하세요,<br />
+              아이의 창의력을 무한히 넓혀주는<br />
+              AI 기반 단어 카드 서비스 <span className='font-semibold'>뽑아보카</span>입니다.
+            </p>
             <img
-              className="mx-auto w-1/4"
-              alt='logo'
-              src=""
+              className="w-96 pl-12 pt-10 mt-20"
+              src={`/img/login_img.png`}
+              alt="뽑아보카 이미지"
             />
           </div>
-          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-3" onSubmit={handleSubmit}>
-              <div>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder='이메일'
-                  value={email}
-                  required
-                  onChange={handleEmailChange} // 입력값이 변경될 때 상태 업데이트
-                  className="block w-full rounded-md border-0 px-5 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-              <div>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  placeholder='비밀번호'
-                  value={password}
-                  required
-                  onChange={handlePasswordChange} // 입력값이 변경될 때 상태 업데이트
-                  className="block w-full rounded-md border-0 px-5 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-                <div className="flex mt-3 justify-end">
-                  <div className="text-sm">
-                    <a href="#" className="font-semibold text-navy-500 hover:text-green-400">
-                      비밀번호 찾기
-                    </a>
+          <div className="flex flex-col items-end justify-center px-6 py-8 mt-10">
+            <div className="w-full bg-white rounded-lg md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+              <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <form className="space-y-4 md:space-y-5" onSubmit={handleSubmit}>
+                  <p className="mt-10 mb-10 pb-5 text-center text-2xl font-bold">
+                    로그인
+                  </p>
+                  <div className='relative'>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder='이메일을 입력해주세요'
+                      value={email}
+                      required
+                      onChange={handleEmailChange}
+                      className="bg-gray-50 mb-2 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-96 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    />
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      placeholder='비밀번호를 입력해주세요'
+                      value={password}
+                      required
+                      onChange={handlePasswordChange}
+                      className={`bg-gray-50 border border-gray-300 text-gray-800 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-96 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                    />
+                    <div className="flex mt-3 justify-end">
+                      <div className="text-sm">
+                        <a href="#" className="font-semibold text-gray-500 hover:text-main">
+                          비밀번호 재설정
+                        </a>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                  <br />
+                  <button
+                    type="submit"
+                    className="w-full flex justify-center rounded-lg bg-main py-3 px-4 text-lg font-semibold leading-tight text-white shadow-md transition duration-200 ease-in-out cursor-pointer mb-2">
+                    로그인
+                  </button>
+                  <p className="mt-10 text-center text-sm text-gray-500">
+                    계정이 없으신가요?{'   '}
+                    <a href="/register" className="font-semibold leading-6 text-navy-500 hover:text-navy-400">
+                      &nbsp;회원가입하기
+                    </a>
+                  </p>
+                </form>
               </div>
-              <div>
-                <button
-                  type="submit"
-                  className="w-full flex justify-center rounded-lg bg-blue-600 py-2 px-4 font-PretendardVariable text-m font-semibold leading-tight text-white shadow-md transition duration-200 ease-in-out cursor-pointer mb-2"
-                >
-                  로그인
-                </button>
-              </div>
-            </form>
-
-            <p className="mt-10 text-center text-sm text-gray-500">
-              계정이 없으신가요?{'   '}
-              <a href="/register" className="font-semibold leading-6 text-navy-500 hover:text-navy-400">
-                &nbsp;회원가입하기
-              </a>
-            </p>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
     </div>
   </>
   );
