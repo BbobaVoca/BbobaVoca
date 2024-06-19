@@ -3,7 +3,6 @@ import HeroSection from "../components/HeroSection";
 import { VocaThemes } from "../interfaces/Interfaces";
 import { getMyTheme, makeVocas } from "../api/bbobavoca/bbobavocaAxios";
 import ThemeCard from "../components/ThemeCard";
-import { pastelColors } from "../styles/pasterColors";
 import { Dropdown } from "flowbite-react";
 import Loading from "../components/Loading";
 
@@ -37,20 +36,7 @@ const Home = () => {
     if (token) {
         const cardResponse = await getMyTheme(token);
         if (cardResponse && cardResponse.data) {
-            const cardsArray = cardResponse.data;
-
-            if (Array.isArray(cardsArray)) {
-                const updatedCards = cardsArray.map(card => {
-                    return { 
-                      category: card.category,
-                      description: card.description,
-                      bgColor: card.bgColor
-                    };
-                });
-                setThemes(updatedCards);
-            } else {
-                console.error('cardsArray is not an array:', cardsArray);
-            }
+          setThemes(cardResponse.data);
         }
     }
   };

@@ -31,14 +31,14 @@ function ThemeCard(props: {
     return (
         <>
             <div className='flex flex-1 bg-white rounded-lg ml-1 mr-1 shadow-inner outline outline-1 outline-neutral-200 hover:outline-blue-500/50'>
-                <figure className='relative w-full h-full flex flex-col'>
+                <figure className='relative w-full h-full flex flex-col cursor-pointer'>
                     <div className="relative">
-                        <div className={`h-40 rounded-lg rounded-b-none cursor-pointer object-cover w-full ${props.color}`}>
+                        <div className={`h-40 rounded-lg rounded-b-none object-cover w-full ${props.color}`}>
                             <div className="relative h-full flex justify-center items-center font-ownglyph text-6xl" onClick={handleCardClick}>
                                 {props.category}
                             </div>
                             <div className="absolute top-2 right-2 flex">
-                                <MdDelete className="text-white bg-black/50 rounded-full p-1 cursor-pointer text-xl" onClick={() => setOpenModal(true)} />
+                                <MdDelete className="text-white bg-black/50 rounded-full p-1 text-xl" onClick={() => setOpenModal(true)} />
                             </div>
                         </div>
                     </div>
