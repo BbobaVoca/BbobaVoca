@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { MakeVocaCard, VocaTheme, VocaThemeCard, SuccessResponse, AllVocaTheme, AllVocaThemeCard, VocaPrint, AllVocaThemes, VocaThemeDetail } from "../../interfaces/Interfaces";
+import { MakeVocaCard, VocaTheme, VocaThemeCard, SuccessResponse, AllVocaTheme, AllVocaThemeCard, VocaPrint, AllVocaThemes, VocaThemeDetail, VocaThemes } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 
@@ -19,7 +19,7 @@ export const makeVocas = async (
 // 내 카드 카테고리 반환
 export const getMyTheme = async (
     token: string
-): Promise<AxiosResponse<VocaThemeDetail> | null> => {
+): Promise<AxiosResponse<VocaThemes> | null> => {
     const response = await bobbaVocaAxios.get(
         "bbobavoca/myvoca",
         { headers: { Authorization: `Bearer ${token}` }}
