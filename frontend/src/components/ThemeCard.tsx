@@ -49,9 +49,9 @@ function ThemeCard(props: {
             </div>
             {/* 삭제 Modal */}
             <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
-                <div className='fixed inset-0 z-40 bg-black opacity-50'></div>
-                    <div className='flex items-center justify-center fixed inset-0 z-50  opacity-100'>
-                        <div className='bg-white rounded-lg border-solid  border-black-500 p-70 flex flex-col justify-center items-center'>
+                <div className='fixed top-20 left-0 w-full h-full bg-gray-500 bg-opacity-60'></div>
+                    <div className='flex items-center justify-center fixed inset-0 opacity-100'>
+                        <div className='z-10 bg-white rounded-lg border-solid  border-black-500 p-70 flex flex-col justify-center items-center'>
                             <Modal.Body>
                             <div className="text-center px-10">
                                 <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-black-200" />
