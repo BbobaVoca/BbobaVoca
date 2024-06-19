@@ -4,6 +4,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { VocaThemeCard } from "../interfaces/Interfaces";
 import VocaNameCard from "../components/VocaNameCard";
+import { getMyVocaCards } from "../api/bbobavoca/bbobavocaAxios";
 
 const VocaPage = () => {
     const navigate = useNavigate();
@@ -84,11 +85,26 @@ const VocaPage = () => {
         setShowPopup(true);
     };
 
+    const fetchVocaCards = async () => {
+        if (token) {
+            const cardResponse = await getMyVocaCards(token, themeInfo);
+            if (cardResponse && cardResponse.data) {
+                setVocaCards(cardResponse.data);
+            }
+        }
+    };
+
     const handleOutsideClick = (event: MouseEvent) => {
         if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
             setShowPopup(false);
         }
     };
+
+    useEffect(() => {
+        if (token) {
+          fetchVocaCards();
+        }
+      }, [token]);
 
     useEffect(() => {
         const updateContainerWidth = () => {
