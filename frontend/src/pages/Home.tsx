@@ -16,7 +16,7 @@ const Home = () => {
   const [showHeroSection, setShowHeroSection] = useState(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [themes, setThemes] = useState<VocaThemes>([{ category: "과일", description: "test111" }, { category: "동물", description: "test222" }, { category: "애니메이션", description: "test333" }, { category: "감정", description: "test444" }]);
+  const [themes, setThemes] = useState<VocaThemes>([{ category: "과일", description: "test111", bgColor: "bg-pink-100" }, { category: "동물", description: "test222", bgColor: "bg-purple-100" }, { category: "애니메이션", description: "test333", bgColor: "bg-yellow-100" }, { category: "감정", description: "test444", bgColor: "bg-orange-100" }]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const [vocaForm, setVocaForm] = useState({
@@ -41,7 +41,11 @@ const Home = () => {
 
             if (Array.isArray(cardsArray)) {
                 const updatedCards = cardsArray.map(card => {
-                    return { category: card.category, description: card.description };
+                    return { 
+                      category: card.category,
+                      description: card.description,
+                      bgColor: card.bgColor
+                    };
                 });
                 setThemes(updatedCards);
             } else {
@@ -167,7 +171,7 @@ const Home = () => {
                                       <ThemeCard
                                           category={theme.category}
                                           description={theme.description}
-                                          color={pastelColors[Math.floor(Math.random() * pastelColors.length)]}
+                                          color={theme.bgColor}
                                       />
                                   </div>
                               ))}

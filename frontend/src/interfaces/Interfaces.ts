@@ -50,7 +50,20 @@ export interface VocaTheme {
     description: string;
 }
 
-export interface VocaThemes extends Array<VocaTheme> {}
+export interface VocaThemeDetail {
+    category: string;
+    description: string;
+    bgColor: string;
+}
+
+export interface VocaThemes extends Array<VocaThemeDetail> {}
+
+export interface AllVocaThemeDetail {
+    category: string;
+    description: string;
+    bgColor: string;
+    nickname: string;
+}
 
 export interface AllVocaTheme {
     category: string;
@@ -58,9 +71,12 @@ export interface AllVocaTheme {
     nickname: string;
 }
 
+export interface AllVocaThemes extends Array<AllVocaThemeDetail> {}
+
 export interface AllVocaThemeCard {
     category: string;
     description: string;
+    bgColor: string;
     nickname: string;
     cards: VocaCard[];
 }
@@ -68,6 +84,7 @@ export interface AllVocaThemeCard {
 export interface VocaThemeCard {
     category: string;
     description: string;
+    bgColor: string;
     cards: VocaCard[];
 }
 
