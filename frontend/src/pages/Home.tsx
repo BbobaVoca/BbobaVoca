@@ -3,7 +3,6 @@ import HeroSection from "../components/HeroSection";
 import { VocaThemes } from "../interfaces/Interfaces";
 import { getMyTheme, makeVocas } from "../api/bbobavoca/bbobavocaAxios";
 import ThemeCard from "../components/ThemeCard";
-import { pastelColors } from "../styles/pasterColors";
 import { Dropdown } from "flowbite-react";
 import Loading from "../components/Loading";
 
