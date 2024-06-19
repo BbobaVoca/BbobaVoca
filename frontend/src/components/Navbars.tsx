@@ -95,7 +95,7 @@ function Navbars() {
               <img
                   className="h-full w-full object-cover rounded-full"
                   alt='profile'
-                  src={userInfo?.baby[0].profile}
+                  src={userInfo?.baby.profile}
               />
             </div>
             <div className='flex w-full ml-3 tracking-wide'>

@@ -15,14 +15,14 @@ export interface RegisterInfo {
     email: string;
     password: string;
     nickname: string;
-    baby: Baby[];
+    baby: Baby;
     credit: number;
 }
 
 export interface MyUser {
     email: string;
     nickname: string;
-    baby: Baby[];
+    baby: Baby;
     credit: number;
 }
 

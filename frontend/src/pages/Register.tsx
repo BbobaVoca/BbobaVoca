@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { checkEmail, register } from '../api/user/userAxios';
+import { checkEmail, checkNickname, register, uploadProfile } from '../api/user/userAxios';
 
 
 const Register = () => {
@@ -8,7 +8,9 @@ const Register = () => {
     email: "",
     nickname: "",
     password: "",
-    checkedPassword: ""
+    checkedPassword: "",
+    name: "이름",
+    profile: ""
   });
 
   // 오류 메세지
@@ -27,6 +29,9 @@ const Register = () => {
     checkedPassword: false,
   });
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewSrc, setPreviewSrc] = useState<string>('/img/default_image.png');
+
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,26 +43,47 @@ const Register = () => {
     const emailResult = await checkEmail(signupForm.email);
 
     if (emailResult?.data.isExist === true) {
-      // 이메일 중복
       setValidMessage((prev) => ({
         ...prev,
         emailMessage: "사용 불가능한 이메일입니다.",
       }));
-      setIsValid({ ...isValid, checkedPassword: false });
+      setIsValid({ ...isValid, email: false });
     } else if (emailResult?.data.isExist == false) {
-      // 이메일 사용 가능
       setValidMessage((prev) => ({
         ...prev,
         emailMessage: "사용 가능한 이메일입니다.",
       }));
-      setIsValid({ ...isValid, checkedPassword: true });
+      setIsValid({ ...isValid, email: true });
     } else {
-      // 기타 상황
       setValidMessage((prev) => ({
         ...prev,
         emailMessage: "잠시 후 다시 시도해주세요.",
       }));
-      setIsValid({ ...isValid, checkedPassword: false });
+      setIsValid({ ...isValid, email: false });
+    }
+  };
+
+  const handleCheckNickname = async (e: FormEvent) => {
+    const nicknameResult = await checkNickname(signupForm.nickname);
+
+    if (nicknameResult?.data.isExist === true) {
+      setValidMessage((prev) => ({
+        ...prev,
+        nicknameMessage: "중복된 닉네임입니다.",
+      }));
+      setIsValid({ ...isValid, nickname: false });
+    } else if (nicknameResult?.data.isExist == false) {
+      setValidMessage((prev) => ({
+        ...prev,
+        nicknameMessage: "사용 가능한 닉네임입니다.",
+      }));
+      setIsValid({ ...isValid, nickname: true });
+    } else {
+      setValidMessage((prev) => ({
+        ...prev,
+        nicknameMessage: "잠시 후 다시 시도해주세요.",
+      }));
+      setIsValid({ ...isValid, nickname: false });
     }
   };
 
@@ -74,7 +100,7 @@ const Register = () => {
     } else {
       setValidMessage((prev) => ({
         ...prev,
-        nicknameMessage: "사용 가능한 닉네임입니다.",
+        nicknameMessage: "",
       }));
       setIsValid({ ...isValid, nickname: true });
     }
@@ -116,19 +142,40 @@ const Register = () => {
     }
   }, [signupForm.password, signupForm.checkedPassword]);
 
+  const handleFileUpload = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+            setSelectedFile(file);
+            setPreviewSrc(URL.createObjectURL(file));
+        }
+    };
+    fileInput.click();
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (isValid) {
-      const registerInfos = {
-        email: signupForm.email,
-        password: signupForm.password,
-        nickname: signupForm.nickname,
-        baby: [{name: "test1", profile: "src" }],
-        credit: 0
-      }
+      const formData = new FormData();
+      
+      formData.append('email', signupForm.email);
+      formData.append('password', signupForm.password);
+      formData.append('nickname', signupForm.nickname);
+      formData.append(`baby[name]`, signupForm.name);
+      formData.append(`baby[profile]`, signupForm.profile);
 
-      const registerResult = await register(registerInfos);
+      // const registerInfos = {
+      //   email: signupForm.email,
+      //   password: signupForm.password,
+      //   nickname: signupForm.nickname,
+      //   baby: { name: signupForm.name, profile: signupForm.profile },
+      // }
+
+      const registerResult = await register(formData);
 
       if (registerResult) {
         navigate('/login');
@@ -144,103 +191,145 @@ const Register = () => {
 
   return (
     <>
-      <div className='main-font'>
-        <section className="bg-white dark:bg-gray-900">
-          <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-            <div className="register-box-container w-full bg-white rounded-lg md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-              <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                <form className="space-y-4 md:space-y-5" onSubmit={handleSubmit}>
-                  <div className='relative'>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      value={signupForm.email}
-                      onChange={handleChange}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="이메일"
-                      required
-                    />
-                    <button
-                      className="absolute right-3 top-4 w-15 bg-blue-600 text-white text-xs font-PretendardVariable font-normal rounded-md py-1 px-2 transition duration-200 ease-in-out cursor-pointer"
-                      onClick={handleCheckEmail}>중복확인
-                    </button>
-                    <p className={`text-gray-500 sm:text-sm ml-2 mt-1`}>
-                      {validMessage.emailMessage}
-                    </p>
-                  </div>
-                  <div className='relative'>
-                    <input
-                      type="text"
-                      name="nickname"
-                      id="nickname"
-                      value={signupForm.nickname}
-                      onChange={handleChange}
-                      maxLength={10}
-                      className={`bg-gray-50 border border-gray-300 text-gray-800 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                      placeholder="닉네임"
-                      required
-                    />
-                    <p className={`text-gray-500 sm:text-sm ml-2 mt-1`}>
-                      {validMessage.nicknameMessage}
-                    </p>
-                  </div>
-                  <div>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      value={signupForm.password}
-                      onChange={handleChange}
-                      placeholder="비밀번호"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      required
-                    />
-                    <p className="text-red-500 sm:text-sm ml-2 mt-1">
-                    {validMessage.passwordMessage}
-                    </p>
-                  </div>
-                  <div>
-                    <input
-                      type="password"
-                      name="checkedPassword"
-                      id="checkedPassword"
-                      placeholder="비밀번호 확인"
-                      value={signupForm.checkedPassword}
-                      onChange={handleChange}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      required
-                    />
-                    <p className="text-red-500 sm:text-sm ml-2 mt-1">
-                    {validMessage.checkedPasswordMessage}
-                    </p>
-                  </div>
-                  <br></br>
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
+      <div className='bg-main w-screen'>
+        <section className="dark:bg-gray-900">
+          <div className='flex justify-between pt-20 px-20'>
+            <div className='text-white text-3xl leading-10 mt-20'>
+              <p className='px-10'>
+                안녕하세요,<br />
+                아이의 창의력을 무한히 넓혀주는<br />
+                AI 기반 단어 카드 서비스 <span className='font-semibold'>뽑아보카</span>입니다.
+              </p>
+              <img
+                className="w-96 pl-12 pt-10 mt-20"
+                src={`/img/login_img.png`}
+                alt="뽑아보카 이미지"
+              />
+            </div>
+            <div className="flex flex-col items-end justify-center px-6 py-8 mt-10">
+              <div className="w-full bg-white rounded-lg md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                  <form className="space-y-4 md:space-y-5" onSubmit={handleSubmit}>
+                    <div className='relative'>
+                      <p className='mb-1 ml-1 text-sm'>이메일</p>
                       <input
-                        id="terms"
-                        aria-describedby="terms"
-                        type="checkbox"
-                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                        type="email"
+                        name="email"
+                        id="email"
+                        value={signupForm.email}
+                        onChange={handleChange}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-96 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="이메일을 입력해주세요"
                         required
                       />
+                      <button
+                        className="absolute right-3 top-10 w-15 bg-main text-white text-xs font-PretendardVariable font-normal rounded-md py-1 px-2 transition duration-200 ease-in-out cursor-pointer"
+                        onClick={handleCheckEmail}>중복확인
+                      </button>
+                      <p className={`text-gray-500 sm:text-sm ml-2 mt-1`}>
+                        {validMessage.emailMessage}
+                      </p>
                     </div>
-                    <div className="ml-3 text-sm">
-                      <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">
-                        뽑아보카의 <a className="font-medium text-primary-600 hover:underline dark:text-primary-500" href="/">이용약관</a>에 동의합니다.</label>
+                    <div className='relative'>
+                      <p className='mb-1 ml-1 text-sm'>닉네임</p>
+                      <input
+                        type="text"
+                        name="nickname"
+                        id="nickname"
+                        value={signupForm.nickname}
+                        onChange={handleChange}
+                        maxLength={10}
+                        className={`bg-gray-50 border border-gray-300 text-gray-800 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-96 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                        placeholder="닉네임"
+                        required
+                      />
+                      <button
+                        className="absolute right-3 top-10 w-15 bg-main text-white text-xs font-PretendardVariable font-normal rounded-md py-1 px-2 transition duration-200 ease-in-out cursor-pointer"
+                        onClick={handleCheckNickname}>중복확인
+                      </button>
+                      <p className={`text-gray-500 sm:text-sm ml-2 mt-1`}>
+                        {validMessage.nicknameMessage}
+                      </p>
                     </div>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full flex justify-center rounded-lg bg-blue-600 py-3 px-4 font-PretendardVariable text-lg font-medium leading-tight text-white shadow-md transition duration-200 ease-in-out cursor-pointer mb-2">
-                    뽑아보카 시작하기
-                  </button>
-                  <p className="mt-10 text-center text-sm text-gray-500">
-                    이미 회원가입을 하셨나요?&nbsp;&nbsp;&nbsp;
-                    <a href="/login" className="font-semibold text-primary-600 hover:underline dark:text-primary-500">로그인하기</a>
-                  </p>
-                </form>
+                    <div>
+                      <p className='mb-1 ml-1 text-sm'>비밀번호</p>
+                      <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        value={signupForm.password}
+                        onChange={handleChange}
+                        placeholder="영문자, 숫자, 특수문자 포함 8~20자리"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-96 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required
+                      />
+                      <p className="text-red-500 sm:text-sm ml-2 mt-1 mb-2">
+                        {validMessage.passwordMessage}
+                      </p>
+                      <input
+                        type="password"
+                        name="checkedPassword"
+                        id="checkedPassword"
+                        placeholder="비밀번호 확인"
+                        value={signupForm.checkedPassword}
+                        onChange={handleChange}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-96 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required
+                      />
+                      <p className="text-red-500 sm:text-sm ml-2 mt-1">
+                        {validMessage.checkedPasswordMessage}
+                      </p>
+                    </div>
+                    <div className='relative'>
+                      <p className='mb-1 ml-1 text-sm'>내 아이 프로필</p>
+                      <div className='flex'>
+                        <div className="rounded-full overflow-hidden w-24 mt-3 ml-4">
+                          <img
+                              className="h-full w-full object-cover rounded-full"
+                              alt='profile'
+                              src={previewSrc}
+                              onClick={handleFileUpload}
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          name="name"
+                          id="name"
+                          value={signupForm.name}
+                          onChange={handleChange}
+                          maxLength={10}
+                          className={`text-gray-800 sm:text-sm ml-3 w-32 p-4`}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <br />
+                    <div className="flex items-start">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="terms"
+                          aria-describedby="terms"
+                          type="checkbox"
+                          className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                          required
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">
+                          뽑아보카의 <a className="font-medium text-primary-600 hover:underline dark:text-primary-500" href="/">이용약관</a>에 동의합니다.</label>
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full flex justify-center rounded-lg bg-main py-3 px-4 text-lg font-semibold leading-tight text-white shadow-md transition duration-200 ease-in-out cursor-pointer mb-2">
+                      회원가입
+                    </button>
+                    <p className="mt-10 text-center text-sm text-gray-500">
+                      이미 회원가입을 하셨나요?&nbsp;&nbsp;&nbsp;
+                      <a href="/login" className="font-semibold text-primary-600 hover:underline dark:text-primary-500">로그인하기</a>
+                    </p>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

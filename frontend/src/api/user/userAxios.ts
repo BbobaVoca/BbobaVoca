@@ -1,16 +1,19 @@
 import { AxiosResponse } from "axios";
-import { CheckBooleanResponse, LoginResponse, MyUser, RegisterInfo, SuccessResponse, Users } from "../../interfaces/Interfaces";
+import { Baby, CheckBooleanResponse, LoginResponse, MyUser, RegisterInfo, SuccessResponse, Users } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 
 // 회원가입
 export const register = async (
-    registerInput: RegisterInfo
+    formData: FormData
 ): Promise<AxiosResponse<SuccessResponse> | null> => {
     const response = await bobbaVocaAxios.post(
         "members/signup",
-        { registerInput }
-    );
+        formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+    });
     return response;
 };
 
@@ -48,6 +51,22 @@ export const checkNickname = async (
         "members/check-nickname",
         { nickname }
     );
+    return response;
+};
+
+// 프로필 올리기
+export const uploadProfile = async (
+    token: string,
+    formData: FormData
+): Promise<AxiosResponse<SuccessResponse> | null> => {
+    const response = await bobbaVocaAxios.post(
+        "voca/profile-update",
+        formData, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response;
 };
 
