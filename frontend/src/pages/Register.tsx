@@ -29,7 +29,7 @@ const Register = () => {
     checkedPassword: false,
   });
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File>();
   const [previewSrc, setPreviewSrc] = useState<string>('/img/default_image.png');
 
   const navigate = useNavigate();
@@ -159,21 +159,14 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (isValid) {
+    if (isValid && selectedFile) {
       const formData = new FormData();
       
       formData.append('email', signupForm.email);
       formData.append('password', signupForm.password);
       formData.append('nickname', signupForm.nickname);
-      formData.append(`baby[name]`, signupForm.name);
-      formData.append(`baby[profile]`, signupForm.profile);
-
-      // const registerInfos = {
-      //   email: signupForm.email,
-      //   password: signupForm.password,
-      //   nickname: signupForm.nickname,
-      //   baby: { name: signupForm.name, profile: signupForm.profile },
-      // }
+      formData.append(`babies[name]`, signupForm.name);
+      formData.append(`babies[profile]`, selectedFile);
 
       const registerResult = await register(formData);
 
