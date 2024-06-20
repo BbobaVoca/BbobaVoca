@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { checkEmail, checkNickname, register, uploadProfile } from '../api/user/userAxios';
+import { checkEmail, checkNickname, register } from '../api/user/userAxios';
 
 
 const Register = () => {
@@ -9,8 +9,7 @@ const Register = () => {
     nickname: "",
     password: "",
     checkedPassword: "",
-    name: "이름",
-    profile: ""
+    name: "이름"
   });
 
   // 오류 메세지
@@ -37,6 +36,19 @@ const Register = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSignupForm({ ...signupForm, [name]: value });
+    
+    if (name === "email") {
+      setValidMessage((prev) => ({
+        ...prev,
+        emailMessage: "다시 중복확인을 해주세요.",
+      }));
+    }
+    if (name === "nickname") {
+      setValidMessage((prev) => ({
+        ...prev,
+        nicknameMessage: "다시 중복확인을 해주세요.",
+      }));
+    }
   }
 
   const handleCheckEmail = async (e: FormEvent) => {
@@ -88,23 +100,23 @@ const Register = () => {
   };
 
   // 닉네임 유효성 검사
-  useEffect(() => {
-    const regex = /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,10}$/;
+  // useEffect(() => {
+  //   const regex = /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,10}$/;
 
-    if (!regex.test(signupForm.nickname)) {
-      setValidMessage((prev) => ({
-        ...prev,
-        nicknameMessage: "2자 이상 10자 이하로 입력해주세요.",
-      }));
-      setIsValid({...isValid, nickname: false });
-    } else {
-      setValidMessage((prev) => ({
-        ...prev,
-        nicknameMessage: "",
-      }));
-      setIsValid({ ...isValid, nickname: true });
-    }
-  }, [signupForm.nickname]);
+  //   if (!regex.test(signupForm.nickname)) {
+  //     setValidMessage((prev) => ({
+  //       ...prev,
+  //       nicknameMessage: "2자 이상 10자 이하로 입력해주세요.",
+  //     }));
+  //     setIsValid({...isValid, nickname: false });
+  //   } else {
+  //     setValidMessage((prev) => ({
+  //       ...prev,
+  //       nicknameMessage: "",
+  //     }));
+  //     setIsValid({ ...isValid, nickname: true });
+  //   }
+  // }, [signupForm.nickname]);
 
   // 비밀번호 유효성 검사
   useEffect(() => {
@@ -159,8 +171,6 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("test", selectedFile?.name);
-
     if (isValid && selectedFile) {
       const formData = new FormData();
       
@@ -169,6 +179,8 @@ const Register = () => {
       formData.append('nickname', signupForm.nickname);
       formData.append('name', signupForm.name);
       formData.append('profile', selectedFile);
+
+      console.log("test:", selectedFile?.name);
 
       const registerResult = await register(formData);
 
