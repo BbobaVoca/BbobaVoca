@@ -159,14 +159,16 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    console.log("test", selectedFile?.name);
+
     if (isValid && selectedFile) {
       const formData = new FormData();
       
       formData.append('email', signupForm.email);
       formData.append('password', signupForm.password);
       formData.append('nickname', signupForm.nickname);
-      formData.append(`babies[name]`, signupForm.name);
-      formData.append(`babies[profile]`, selectedFile);
+      formData.append('name', signupForm.name);
+      formData.append('profile', selectedFile);
 
       const registerResult = await register(formData);
 

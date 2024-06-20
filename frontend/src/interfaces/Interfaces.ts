@@ -11,13 +11,6 @@ export interface CheckBooleanResponse {
     isExist: boolean;
 }
 
-export interface RegisterInfo {
-    email: string;
-    password: string;
-    nickname: string;
-    babies: Baby;
-}
-
 export interface MyUser {
     email: string;
     nickname: string;
