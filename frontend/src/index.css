@@ -30,3 +30,8 @@ code {
   font-family: "Uhbeezziba";
   src: url('./styles/font/UhBeeZZIBA-Regular.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'Maplestory';
+  src: url('./styles/font/Maplestory_Light.ttf') format('woff');
+}

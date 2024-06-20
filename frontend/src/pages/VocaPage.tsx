@@ -1,10 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { MdPrint } from 'react-icons/md';
-import { HiArrowLeft } from "react-icons/hi";
+import { MdKeyboardArrowRight, MdKeyboardArrowLeft, MdPrint } from 'react-icons/md';
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { VocaThemeCard } from "../interfaces/Interfaces";
 import VocaNameCard from "../components/VocaNameCard";
 import { getMyVocaCards } from "../api/bbobavoca/bbobavocaAxios";
+import VocaCard from "../components/VocaCard";
+import { HiArrowLeft } from "react-icons/hi";
 
 const VocaPage = () => {
     const navigate = useNavigate();
@@ -19,50 +20,50 @@ const VocaPage = () => {
         bgColor: "bg-pink-100",
         cards: [
             {
-                src: "test",
+                src: "/img/test.png",
                 kor: "사과",
                 other: "Apple",
                 example: "사과는 아삭아삭"
             },
             {
-                src: "test",
+                src: "/img/test.png",
                 kor: "바나나",
                 other: "Banana",
                 example: "바나나는 기다래"
             },
             {
-                src: "test",
-                kor: "바나나",
+                src: "/img/test.png",
+                kor: "멜론",
                 other: "Banana",
                 example: "바나나는 기다래"
             },
             {
-                src: "test",
-                kor: "바나나",
+                src: "/img/test.png",
+                kor: "수박",
                 other: "Banana",
                 example: "바나나는 기다래"
             },
             {
-                src: "test",
-                kor: "바나나",
+                src: "/img/test.png",
+                kor: "파인애플",
                 other: "Banana",
                 example: "바나나는 기다래"
             },
             {
-                src: "test",
-                kor: "바나나",
+                src: "/img/test.png",
+                kor: "자두",
                 other: "Banana",
                 example: "바나나는 기다래"
             },
             {
-                src: "test",
-                kor: "바나나",
+                src: "/img/test.png",
+                kor: "복숭아",
                 other: "Banana",
                 example: "바나나는 기다래"
             },
             {
-                src: "test",
-                kor: "바나나",
+                src: "/img/test.png",
+                kor: "참외",
                 other: "Banana",
                 example: "바나나는 기다래"
             },
@@ -71,6 +72,7 @@ const VocaPage = () => {
     const [containerWidth, setContainerWidth] = useState<number>(0);
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [selectedCardIndex, setSelectedCardIndex] = useState<number>(0);
+    const [selectedCardInfo, setSelectedCardInfo] = useState(vocaCards.cards[0]);
 
     const themeInfo = {
         category: category,
@@ -79,6 +81,7 @@ const VocaPage = () => {
 
     const handleCardClick = (index: number) => {
         setSelectedCardIndex(index);
+        setSelectedCardInfo(vocaCards.cards[index]);
     };
 
     const handlePrintButtonClick = () => {
@@ -132,7 +135,7 @@ const VocaPage = () => {
 
     return (
         <>
-        <div className='flex w-screen h-screen justify-center self-stretch text-gray-700 bg-light-green'>
+        <div className='flex w-screen h-full justify-center self-stretch text-gray-700 bg-light-green'>
             <div className='flex flex-1 flex-col md:flex-row box-border max-w-screen-xl items-center justify-start px-5 md:px-20 xl:px-10 pt-20 pb-20'>
                 <div className='flex-1 flex-grow-4 self-start max-w-none prose-lg mx-4 text-gray-700'>
                     <div id="content-container" className='mx-auto md:w-[80%]'>
@@ -155,16 +158,41 @@ const VocaPage = () => {
                             </div>
                         </div>
                         <div className="mt-3">
-                            <div className='grid grid-cols-1 md:grid-cols-2 gap-2 ml-3 mr-3 mt-5 mb-5'>
-                                {/* 단어 카드 반환한 거 띄우는 위치 */}
-                                {vocaCards.cards.map((cards, index) => (
-                                <div key={index} className='flex flex-col w-full pb-1'>
-                                    <VocaNameCard
-                                        kor={cards.kor}
-                                        onClick={() => handleCardClick(index)}
-                                        isSelected={index === selectedCardIndex}
+                            <div className="flex justify-between mx-3 mb-3">
+                                <button
+                                    className="text-gray-600 py-1 px-3 font-medium"
+                                    onClick={() => handleCardClick((selectedCardIndex - 1 + vocaCards.cards.length) % vocaCards.cards.length)}
+                                >
+                                    <img
+                                        src="/img/left-arrow.png"
                                     />
-                                </div>
+                                </button>
+                                <VocaCard
+                                    bgColor={vocaCards.bgColor}
+                                    kor={selectedCardInfo.kor}
+                                    other={selectedCardInfo.other}
+                                    src={selectedCardInfo.src}
+                                    example={selectedCardInfo.example}
+                                />
+                                <button
+                                    className="text-gray-600 py-1 px-3 font-medium"
+                                    onClick={() => handleCardClick((selectedCardIndex + 1) % vocaCards.cards.length)}
+                                >
+                                    <img
+                                        src="/img/right-arrow.png"
+                                    />
+                                </button>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 ml-3 mr-3 mt-5 mb-5">
+                                {/* 단어 카드 반환한 거 띄우는 위치 */}
+                                {vocaCards.cards.map((card, index) => (
+                                    <div key={index} className="flex flex-col w-full pb-1">
+                                        <VocaNameCard
+                                            kor={card.kor}
+                                            onClick={() => handleCardClick(index)}
+                                            isSelected={index === selectedCardIndex}
+                                        />
+                                    </div>
                                 ))}
                             </div>
                         </div>
