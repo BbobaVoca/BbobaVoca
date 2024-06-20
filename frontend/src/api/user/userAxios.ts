@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { Baby, CheckBooleanResponse, LoginResponse, MyUser, RegisterInfo, SuccessResponse, Users } from "../../interfaces/Interfaces";
+import { CheckBooleanResponse, LoginResponse, MyUser, SuccessResponse, Users } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 

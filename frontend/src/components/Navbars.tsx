@@ -36,6 +36,14 @@ function Navbars() {
     }
   };
 
+  const handleLogout = () => {
+    // 로그아웃 버튼 넣기 전 임시 테스트용
+    localStorage.removeItem('token');
+    removeUserFromLocalStorage();
+    setUserInfo(null);
+    setLoggedIn(false);
+  }
+
   const getUserInfo = async () => {
     if (token && !userInfo) {
       const userInfoResult = await user(token);
@@ -98,7 +106,7 @@ function Navbars() {
                   src={userInfo?.babies.profile}
               />
             </div>
-            <div className='flex w-full ml-3 tracking-wide'>
+            <div className='flex w-full ml-3 tracking-wide' onClick={handleLogout}>
               <p className="font-semibold text-black">{userInfo?.nickname}
                 <span className='font-medium'>님</span>
               </p>
