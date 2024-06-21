@@ -50,7 +50,8 @@ function PrintSection(props: {
     const handleTemplateSelect = (type: number) => {
         setPrintInfo(prevForm => ({
             ...prevForm,
-            type: type
+            type: type,
+            template: 0
         }));
 
         setSelectedTemplateIndex(0);
@@ -65,9 +66,25 @@ function PrintSection(props: {
     const handleArrowClick = (direction: string) => {
         if (direction === "left") {
             setSelectedTemplateIndex(prevIndex => (prevIndex - 1 + templateList.length) % templateList.length);
+            setPrintInfo(prevForm => ({
+                ...prevForm,
+                template: (printInfo.template - 1 + templateList.length) % templateList.length
+            }));
         } else {
             setSelectedTemplateIndex(prevIndex => (prevIndex + 1) % templateList.length);
+            setPrintInfo(prevForm => ({
+                ...prevForm,
+                template: (printInfo.template + 1) % templateList.length
+            }));0
         }
+    };
+
+    const handleTempleateClick = (index: number) => {
+        setSelectedTemplateIndex(index);
+        setPrintInfo(prevForm => ({
+            ...prevForm,
+            template: index
+        }));
     };
 
     useEffect(() => {
@@ -128,7 +145,13 @@ function PrintSection(props: {
                             <div className="inset-0 bg-light-green rounded-xl p-3 mx-5 mt-3">
                                 <div className="overflow-auto whitespace-nowrap">
                                     {templateList.map((template, index) => (
-                                        <img key={index} className="inline-block w-36 mr-3" src={template.src} alt={`Template ${index}`} />
+                                        <img
+                                            key={index}
+                                            className={`inline-block w-36 mr-3 ${index===selectedTemplateIndex && 'border border-2 border-blue-500'}`}
+                                            src={template.src}
+                                            alt={`Template ${index}`}
+                                            onClick={() => handleTempleateClick(index)}
+                                        />
                                     ))}
                                 </div>
                             </div>
