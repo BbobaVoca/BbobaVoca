@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { MakeVocaCard, VocaTheme, VocaThemeCard, SuccessResponse, AllVocaTheme, AllVocaThemeCard, VocaPrint, AllVocaThemes, VocaThemeDetail, VocaThemes } from "../../interfaces/Interfaces";
+import { VocaTheme, VocaThemeCard, SuccessResponse, AllVocaTheme, AllVocaThemeCard, VocaPrint, AllVocaThemes, VocaThemes } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 
@@ -33,11 +33,12 @@ export const getMyTheme = async (
 // 내 카드 정보 반환
 export const getMyVocaCards = async (
     token: string,
-    themeInput : VocaTheme
+    category: string,
+    description: string
 ): Promise<AxiosResponse<VocaThemeCard> | null> => {
     const response = await bobbaVocaAxios.post(
         "bbobavoca/select-myvoca",
-        { themeInput },
+        { category, description },
         { headers: { Authorization: `Bearer ${token}` }}
     );
     return response;
@@ -46,11 +47,12 @@ export const getMyVocaCards = async (
 // 카드 삭제
 export const removeVocaTheme = async (
     token: string,
-    themeInput : VocaTheme
+    category: string,
+    description: string
 ): Promise<AxiosResponse<SuccessResponse> | null> => {
     const response = await bobbaVocaAxios.post(
         "bbobavoca/remove",
-        { themeInput },
+        { category, description },
         { headers: { Authorization: `Bearer ${token}` }}
     );
     return response;
@@ -68,11 +70,13 @@ export const getAllVocaTheme = async (
 // 선택 카드 정보 반환
 export const getSelectVocas = async (
     token: string,
-    themeInput : AllVocaTheme
+    category: string,
+    description: string,
+    nickname: string
 ): Promise<AxiosResponse<AllVocaThemeCard> | null> => {
     const response = await bobbaVocaAxios.post(
         "bbobavoca/select-voca",
-        { themeInput },
+        { category, description, nickname },
         { headers: { Authorization: `Bearer ${token}` }}
     );
     return response;
@@ -81,11 +85,15 @@ export const getSelectVocas = async (
 // 프린트
 export const printVocas = async (
     token: string,
-    print : VocaPrint
+    category: string,
+    description: string,
+    nickname: string,
+    type: number,
+    template: number
 ): Promise<AxiosResponse<SuccessResponse> | null> => {
     const response = await bobbaVocaAxios.post(
         "bbobavoca/print",
-        { print },
+        { category, description, nickname, type, template },
         { headers: { Authorization: `Bearer ${token}` }}
     );
     return response;

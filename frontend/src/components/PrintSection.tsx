@@ -92,10 +92,7 @@ function PrintSection(props: {
 
     const handlePrint = async () => {
         if (token) {
-            const successResponse = await printVocas(token, printInfo);
-            if (successResponse && successResponse.data) {
-                console.log(successResponse.data);
-            }
+            await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
         }
     };
 

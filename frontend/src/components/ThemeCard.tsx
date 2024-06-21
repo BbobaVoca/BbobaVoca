@@ -15,11 +15,7 @@ function ThemeCard(props: {
 
     const handleDeleteFolder = async () => {
         if (token) {
-            const removeData = {
-                category: props.category,
-                description: props.description
-            };
-            await removeVocaTheme(token, removeData);
+            await removeVocaTheme(token, props.category, props.description);
             setOpenModal(false);
         }
     };
