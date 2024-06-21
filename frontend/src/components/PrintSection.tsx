@@ -3,6 +3,7 @@ import { MdPrint } from "react-icons/md";
 import { VocaPrint } from "../interfaces/Interfaces";
 import { useRecoilState } from "recoil";
 import { savedUserState } from "../atom";
+import { printVocas } from "../api/bbobavoca/bbobavocaAxios";
 
 
 function PrintSection(props: {
@@ -12,6 +13,7 @@ function PrintSection(props: {
     onClose: () => void;
 }) {
     const popupRef = useRef<HTMLDivElement>(null);
+    const token = localStorage.getItem('token');
     const [userInfo, setUserInfo] = useRecoilState(savedUserState);
     const [printInfo, setPrintInfo] = useState<VocaPrint>({
         category: props.category,
@@ -87,6 +89,15 @@ function PrintSection(props: {
         }));
     };
 
+    const handlePrint = async () => {
+        if (token) {
+            const successResponse = await printVocas(token, printInfo);
+            if (successResponse && successResponse.data) {
+                console.log(successResponse.data);
+            }
+        }
+    };
+
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
@@ -156,7 +167,10 @@ function PrintSection(props: {
                                 </div>
                             </div>
                         </div>
-                        <button className={`w-full flex items-center justify-center text-white text-m font-normal rounded-md py-3 mt-4 transition duration-200 ease-in-out cursor-pointer bg-main`}>
+                        <button
+                            className={`w-full flex items-center justify-center text-white text-m font-normal rounded-md py-3 mt-4 transition duration-200 ease-in-out cursor-pointer bg-main`}
+                            onClick={handlePrint}
+                        >
                             <MdPrint className="mr-2" />
                             프린트하기
                         </button>
