@@ -4,24 +4,24 @@ import { Button, Modal } from 'flowbite-react';
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { removeVocaTheme } from '../api/bbobavoca/bbobavocaAxios';
 import { useNavigate } from 'react-router-dom';
+import { ThemeCardProps } from '../interfaces/Interfaces';
 
 
-function ThemeCard(props: {
-    category: string; description: string; color: string;
-}) {
+const ThemeCard: React.FC<ThemeCardProps> = ({ category, description, color, onDelete }) => {
     const token = localStorage.getItem('token');
     const navigate = useNavigate(); 
     const [openModal, setOpenModal] = useState(false);
 
     const handleDeleteFolder = async () => {
         if (token) {
-            await removeVocaTheme(token, props.category, props.description);
+            await removeVocaTheme(token, category, description);
+            onDelete(category, description);
             setOpenModal(false);
         }
     };
 
     const handleCardClick = () => {
-        navigate(`/${props.category}/${props.description}`);
+        navigate(`/${category}/${description}`);
     };
     
     return (
@@ -29,9 +29,9 @@ function ThemeCard(props: {
             <div className='flex flex-1 bg-white rounded-lg ml-1 mr-1 shadow-inner outline outline-1 outline-neutral-200 hover:outline-blue-500/50'>
                 <figure className='relative w-full h-full flex flex-col cursor-pointer'>
                     <div className="relative">
-                        <div className={`h-40 rounded-lg rounded-b-none object-cover w-full ${props.color}`}>
+                        <div className={`h-40 rounded-lg rounded-b-none object-cover w-full ${color}`}>
                             <div className="relative h-full flex justify-center items-center font-ownglyph text-6xl" onClick={handleCardClick}>
-                                {props.category}
+                                {category}
                             </div>
                             <div className="absolute top-2 right-2 flex">
                                 <MdDelete className="text-white bg-black/50 rounded-full p-1 text-xl" onClick={() => setOpenModal(true)} />
@@ -39,7 +39,7 @@ function ThemeCard(props: {
                         </div>
                     </div>
                     <div className='pt-3 pb-3 pl-5 flex items-center' onClick={handleCardClick}>
-                        {props.description}
+                        {description}
                     </div>
                 </figure>
             </div>
