@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil';
 import { savedUserState } from "../atom";
 import { getUserFromLocalStorage, saveUserToLocalStorage, removeUserFromLocalStorage } from "../utils/localStorage";
 import { user } from "../api/user/userAxios";
+import MyInfoCard from "./MyInfoCard";
 
 
 const theme = {
@@ -20,28 +21,20 @@ function Navbars() {
   const [activeLink, setActiveLink] = useState<string>('');
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useRecoilState(savedUserState);
+  const [activeMyInfo, setActiveMyInfo] = useState<boolean>(false);
 
   const token = localStorage.getItem('token');
 
   const handleLoginButtonClick = () => {
-    if (loggedIn) {
-      // 내 정보창 생기기
-      // 새로 만드는 내 정보창 로그아웃에 해당 내용 넣기
-      // localStorage.removeItem('token');
-      // removeUserFromLocalStorage();
-      // setUserInfo(null);
-      // setLoggedIn(false);
-    } else {
-      navigate("/login");
-    }
+    navigate("/login");
   };
 
+  const handleMyInfo = () => {
+    activeMyInfo? setActiveMyInfo(false) : setActiveMyInfo(true);
+  }
+
   const handleLogout = () => {
-    // 로그아웃 버튼 넣기 전 임시 테스트용
-    localStorage.removeItem('token');
-    removeUserFromLocalStorage();
-    setUserInfo(null);
-    setLoggedIn(false);
+    setActiveMyInfo(false);
   }
 
   const getUserInfo = async () => {
@@ -74,6 +67,7 @@ function Navbars() {
   };
 
   return (
+    <>
     <Navbar border fluid className="fixed left-0 right-0 top-0 z-50 py-5">
       <Navbar.Brand href="/">
         <span className="self-center whitespace-nowrap font-uhbeezziba text-main text-3xl ml-12 dark:text-white">
@@ -106,11 +100,11 @@ function Navbars() {
                   src={userInfo?.babies.profile}
               />
             </div>
-            <div className='flex w-full ml-3 tracking-wide' onClick={handleLogout}>
+            <div className='flex w-full ml-3 tracking-wide' onClick={handleMyInfo}>
               <p className="font-semibold text-black">{userInfo?.nickname}
                 <span className='font-medium'>님</span>
               </p>
-            </div>     
+            </div>   
           </div>
         ) : (
           <Button color="light" className={`font-semibold hover:bg-green-600 rounded-3xl px-5 mr-2 bg-main text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent ${activeLink === 'login' ? 'active' : ''}`} onClick={handleLoginButtonClick}>
@@ -119,6 +113,12 @@ function Navbars() {
         )}
       </div>
     </Navbar>
+    {activeMyInfo && (
+      <>
+      <MyInfoCard onLogout={handleLogout}/>
+      </>
+    )}
+    </>
   );
 }
 
