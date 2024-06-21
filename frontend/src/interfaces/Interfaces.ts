@@ -94,3 +94,10 @@ export interface VocaPrint {
     type: number;
     template: number;
 }
+
+export interface ThemeCardProps {
+    category: string;
+    description: string;
+    color: string;
+    onDelete: (category: string, description: string) => void;
+}

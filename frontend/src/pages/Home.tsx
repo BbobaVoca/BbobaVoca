@@ -15,7 +15,7 @@ const Home = () => {
   const [showHeroSection, setShowHeroSection] = useState(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [themes, setThemes] = useState<VocaThemes>([{ category: "과일", description: "test111", bgColor: "bg-pink-100" }, { category: "동물", description: "test222", bgColor: "bg-purple-100" }, { category: "애니메이션", description: "test333", bgColor: "bg-yellow-100" }, { category: "감정", description: "test444", bgColor: "bg-orange-100" }]);
+  const [themes, setThemes] = useState<VocaThemes>([{ category: "", description: "", bgColor: "bg-pink-100" }]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const [vocaForm, setVocaForm] = useState<MakeVocaCard>({
@@ -37,6 +37,7 @@ const Home = () => {
         const cardResponse = await getMyTheme(token);
         if (cardResponse && cardResponse.data) {
           setThemes(cardResponse.data);
+          console.log(cardResponse.data);
         }
     }
   };
@@ -112,16 +113,21 @@ const Home = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(token) {
-      setIsLoading(true);
+      // setIsLoading(true);
       setShowPopup(false);
+      fetchCards();
       const submitResult = await makeVocas(token, vocaForm.category, vocaForm.description, vocaForm.age, vocaForm.language);
       if (submitResult) {
-        setIsLoading(false);
+        // setIsLoading(false);
         fetchCards();
       } else {
         console.error('makeVoca fail');
       } 
     }
+  };
+
+  const handleDeleteCard = (category: string, description: string) => {
+    setThemes(prevThemes => prevThemes.filter(theme => theme.category !== category || theme.description !== description));
   };
 
   return (
@@ -158,6 +164,7 @@ const Home = () => {
                                           category={theme.category}
                                           description={theme.description}
                                           color={theme.bgColor}
+                                          onDelete={handleDeleteCard}
                                       />
                                   </div>
                               ))}
