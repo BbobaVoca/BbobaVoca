@@ -93,7 +93,7 @@ const VocaPage = () => {
 
     const fetchVocaCards = async () => {
         if (token) {
-            const cardResponse = await getMyVocaCards(token, themeInfo);
+            const cardResponse = await getMyVocaCards(token, themeInfo.category, themeInfo.description);
             if (cardResponse && cardResponse.data) {
                 setVocaCards(cardResponse.data);
                 setSaveVocaCards(cardResponse.data);

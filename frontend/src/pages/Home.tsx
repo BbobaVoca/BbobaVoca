@@ -1,6 +1,6 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HeroSection from "../components/HeroSection";
-import { VocaThemes } from "../interfaces/Interfaces";
+import { MakeVocaCard, VocaThemes } from "../interfaces/Interfaces";
 import { getMyTheme, makeVocas } from "../api/bbobavoca/bbobavocaAxios";
 import ThemeCard from "../components/ThemeCard";
 import { Dropdown } from "flowbite-react";
@@ -18,7 +18,7 @@ const Home = () => {
   const [themes, setThemes] = useState<VocaThemes>([{ category: "과일", description: "test111", bgColor: "bg-pink-100" }, { category: "동물", description: "test222", bgColor: "bg-purple-100" }, { category: "애니메이션", description: "test333", bgColor: "bg-yellow-100" }, { category: "감정", description: "test444", bgColor: "bg-orange-100" }]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
-  const [vocaForm, setVocaForm] = useState({
+  const [vocaForm, setVocaForm] = useState<MakeVocaCard>({
     category: "",
     description: "",
     age: 1,
@@ -63,7 +63,6 @@ const Home = () => {
       fetchCards();
     } else {
       setLoggedIn(false);
-      // setThemes([]);
     }
 
     if (loggedIn) {
@@ -114,7 +113,8 @@ const Home = () => {
     e.preventDefault();
     if(token) {
       setIsLoading(true);
-      const submitResult = await makeVocas(token, vocaForm);
+      setShowPopup(false);
+      const submitResult = await makeVocas(token, vocaForm.category, vocaForm.description, vocaForm.age, vocaForm.language);
       if (submitResult) {
         setIsLoading(false);
         fetchCards();
@@ -239,6 +239,7 @@ const Home = () => {
                     {languageOptions.map(option => (
                       <button
                         key={option.id}
+                        type="button"
                         className={`text-m font-normal rounded-2xl py-3 px-7 mt-4 transition duration-200 ease-in-out cursor-pointer mr-3 ${
                           vocaForm.language === option.id ? 'bg-select-gray text-white' : 'bg-unselect-gray text-select-gray'
                         }`}
