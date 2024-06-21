@@ -13,8 +13,14 @@ function PrintSection(props: {
     onClose: () => void;
 }) {
     const popupRef = useRef<HTMLDivElement>(null);
+    const scrollRef = useRef<HTMLDivElement>(null);
     const token = localStorage.getItem('token');
-    const [userInfo, setUserInfo] = useRecoilState(savedUserState);
+
+    const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [startX, setStartX] = useState<number>(0);
+    const [scrollStart, setScrollStart] = useState<number>(0);
+    const [userInfo] = useRecoilState(savedUserState);
+    
     const [printInfo, setPrintInfo] = useState<VocaPrint>({
         category: props.category,
         description: props.description,
@@ -56,13 +62,8 @@ function PrintSection(props: {
             template: 0
         }));
 
-        setSelectedTemplateIndex(0);
-        
-        if (type === 0) {
-            setTemplateList(cardTemplates);
-        } else {
-            setTemplateList(posterTemplates);
-        }
+        setSelectedTemplateIndex(0);  
+        setTemplateList(type === 0 ? cardTemplates : posterTemplates);
     };
 
     const handleArrowClick = (direction: string) => {
@@ -112,6 +113,41 @@ function PrintSection(props: {
         };
     }, [props.onClose]);
 
+    const handleMouseDown = (event: MouseEvent) => {
+        setIsDragging(true);
+        setStartX(event.clientX);
+        setScrollStart(scrollRef.current!.scrollLeft);
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+        if (!isDragging) return;
+        event.preventDefault();
+        const x = event.clientX;
+        const walk = (x - startX) * 3;
+        scrollRef.current!.scrollLeft = scrollStart - walk;
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    useEffect(() => {
+        const scrollElement = scrollRef.current;
+
+        // DOM 이벤트 리스너 추가
+        scrollElement?.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+
+        return () => {
+            // 이벤트 리스너 제거
+            scrollElement?.removeEventListener('mousedown', handleMouseDown);
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [handleMouseDown, handleMouseMove, handleMouseUp]);
+
+
     return (
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-60 flex items-center justify-center">
@@ -154,7 +190,7 @@ function PrintSection(props: {
                         </div>
                         <div className="relative">
                             <div className="inset-0 bg-light-green rounded-xl p-3 mx-5 mt-3">
-                                <div className="overflow-auto whitespace-nowrap">
+                                <div ref={scrollRef} className="overflow-auto whitespace-nowrap cursor-grab">
                                     {templateList.map((template, index) => (
                                         <img
                                             key={index}
