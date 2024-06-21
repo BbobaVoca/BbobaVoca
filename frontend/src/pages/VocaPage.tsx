@@ -1,19 +1,22 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft, MdPrint } from 'react-icons/md';
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { VocaThemeCard } from "../interfaces/Interfaces";
 import VocaNameCard from "../components/VocaNameCard";
 import { getMyVocaCards } from "../api/bbobavoca/bbobavocaAxios";
 import VocaCard from "../components/VocaCard";
 import { HiArrowLeft } from "react-icons/hi";
+import { vocaCardsInfoState } from "../atom";
+import { useRecoilState } from "recoil";
+import PrintSection from "../components/PrintSection";
 
 const VocaPage = () => {
     const navigate = useNavigate();
-    const popupRef = useRef<HTMLDivElement>(null);
     const token = localStorage.getItem('token');
 
     const { category } = useParams() as { category : string };
     const { description } = useParams() as { description : string };
+    const [saveVocaCards, setSaveVocaCards] = useRecoilState(vocaCardsInfoState);
     const [vocaCards, setVocaCards] = useState<VocaThemeCard>({
         category: "test",
         description: "test111",
@@ -93,13 +96,8 @@ const VocaPage = () => {
             const cardResponse = await getMyVocaCards(token, themeInfo);
             if (cardResponse && cardResponse.data) {
                 setVocaCards(cardResponse.data);
+                setSaveVocaCards(cardResponse.data);
             }
-        }
-    };
-
-    const handleOutsideClick = (event: MouseEvent) => {
-        if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-            setShowPopup(false);
         }
     };
 
@@ -120,12 +118,9 @@ const VocaPage = () => {
     
         updateContainerWidth();
         window.addEventListener('resize', updateContainerWidth);
-        // 팝업창 닫기 이벤트
-        document.addEventListener('mousedown', handleOutsideClick);
     
         return () => {
           window.removeEventListener('resize', updateContainerWidth);
-          document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, []);
 
@@ -203,14 +198,12 @@ const VocaPage = () => {
 
         {showPopup && (
             <>
-                <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-60 flex items-center justify-center">
-                {/* 모달 백그라운드 */}
-                <div ref={popupRef} className={`mx-auto h-3/7 bg-white rounded-lg border-1 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center justify-center mt-4 z-1`} style={{ width: containerWidth }}>
-                    <div className='m-4'>
-                        TEST        
-                    </div>
-                </div>
-                </div>
+                <PrintSection
+                    width={containerWidth}
+                    category={vocaCards.category}
+                    description={vocaCards.description}
+                    onClose={() => setShowPopup(false)}
+                />
             </>
         )}
         </>
