@@ -6,11 +6,14 @@ import { bobbaVocaAxios } from "../axios";
 // 단어 생성
 export const makeVocas = async (
     token: string,
-    vocaInput : MakeVocaCard
+    category: string,
+    description: string,
+    age: number,
+    language: number
 ): Promise<AxiosResponse<VocaTheme> | null> => {
     const response = await bobbaVocaAxios.post(
         "bbobavoca/make",
-        { vocaInput },
+        { category, description, age, language },
         { headers: { Authorization: `Bearer ${token}` }}
     );
     return response;
