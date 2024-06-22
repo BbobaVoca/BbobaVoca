@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { MdPrint } from 'react-icons/md';
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { VocaThemeCard } from "../interfaces/Interfaces";
 import VocaNameCard from "../components/VocaNameCard";
 import { getMyVocaCards } from "../api/bbobavoca/bbobavocaAxios";
 import VocaCard from "../components/VocaCard";
 import { HiArrowLeft } from "react-icons/hi";
-import { vocaCardsInfoState } from "../atom";
+import { vocaCardsInfoState, widthInfoState } from "../atom";
 import { useRecoilState } from "recoil";
 import PrintSection from "../components/PrintSection";
 import Loading from "../components/Loading";
@@ -14,13 +14,14 @@ import Loading from "../components/Loading";
 const VocaPage = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
+    const contentContainerRef = useRef<HTMLDivElement>(null);
 
     const { category } = useParams() as { category : string };
     const { description } = useParams() as { description : string };
     const { nickname } = useParams() as { nickname: string };
     const [saveVocaCards, setSaveVocaCards] = useRecoilState(vocaCardsInfoState);
     const [vocaCards, setVocaCards] = useState<VocaThemeCard>();
-    const [containerWidth, setContainerWidth] = useState<number>(0);
+    const [containerWidth, setContainerWidth] = useRecoilState(widthInfoState);
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [selectedCardIndex, setSelectedCardIndex] = useState<number>(0);
     const [selectedCardInfo, setSelectedCardInfo] = useState(vocaCards?.cards[0]);
@@ -71,18 +72,16 @@ const VocaPage = () => {
 
     useEffect(() => {
         const updateContainerWidth = () => {
-          const contentContainer = document.getElementById('content-container');
-          if (contentContainer) {
-            const width = contentContainer.offsetWidth;
-            setContainerWidth(width);
-          }
+            if (contentContainerRef.current) {
+                setContainerWidth(contentContainerRef.current.offsetWidth);
+            }
         };
-    
-        updateContainerWidth();
+
+        setTimeout(updateContainerWidth, 0); // DOM 업데이트 후에 너비 가져오기
         window.addEventListener('resize', updateContainerWidth);
-    
+
         return () => {
-          window.removeEventListener('resize', updateContainerWidth);
+            window.removeEventListener('resize', updateContainerWidth);
         };
     }, []);
 
@@ -158,18 +157,18 @@ const VocaPage = () => {
                         </div>
                     </div>
                 </div>
-                {showPopup && (
-                <>
-                    <PrintSection
-                        width={containerWidth}
-                        category={vocaCards.category}
-                        description={vocaCards.description}
-                        nickname={nickname}
-                        onClose={() => setShowPopup(false)}
-                    />
-                </>
-                )}
             </div>
+            {showPopup && containerWidth && (
+            <>
+                <PrintSection
+                    width={containerWidth}
+                    category={vocaCards.category}
+                    description={vocaCards.description}
+                    nickname={nickname}
+                    onClose={() => setShowPopup(false)}
+                />
+            </>
+            )}
             </>
         ) : (
             <>
