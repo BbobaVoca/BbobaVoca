@@ -12,9 +12,10 @@ function VocaCard(props: {
     const handleClick = () => {
         getSpeech(props.kor);
     };
+    const themeColor = props.bgColor;
 
     return (
-        <div className={`flex flex-1 ${props.bgColor} rounded-3xl mx-2 mb-2 shadow-inner outline outline-1 outline-neutral-200`}>
+        <div className={`flex flex-1 ${themeColor} rounded-3xl mx-2 mb-2 shadow-inner outline outline-1 outline-neutral-200`}>
             <figure className='relative w-full h-full flex flex-col cursor-pointer'>
                 <div className='flex justify-between py-8 px-10'>
                     <div className='mt-10'>
@@ -24,7 +25,7 @@ function VocaCard(props: {
                             alt="vocaImage"
                         />
                     </div>
-                    <div className={`relative rounded-xl object-cover w-full ${props.bgColor}`}>
+                    <div className={`relative rounded-xl object-cover w-full ${themeColor}`}>
                         <div className="relative flex justify-center items-center font-ownglyph text-6xl py-10">
                             <p className='flex'>
                                 {props.kor}
