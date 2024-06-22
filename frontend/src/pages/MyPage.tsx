@@ -27,7 +27,7 @@ const MyPage = () => {
             const response = await getTimeline(token);
             if (response && response.data) {
                 setTimeline(response.data);
-                // console.log(timeline);
+                 console.log(timeline);
             }
         }
     };
@@ -255,6 +255,29 @@ const MyPage = () => {
                                             <p className='text-lg text-gray-600'>단어를 생성해주세요</p>
                                         </div>
                                     )} */} 
+
+{timeline != null ? ( 
+    <div className='flex flex-col items-center mt-4'>
+    
+                    {timeline.vocas.map((vocaData, vocaIndex) => (
+                        <div key={vocaIndex} className='flex items-center mb-2'>
+                            <span className='font-semibold mr-2'>{vocaData.timestamp}</span>
+                            <ul className='list-disc ml-4'>
+                                {vocaData.voca.map((word, wordIndex) => (
+                                    <li key={`${vocaIndex}-${wordIndex}`}>{word}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+            
+    </div>
+) : (
+    <div className='flex flex-col items-center justify-center bg-white bg-opacity-80 rounded-lg p-6 mt-40'>
+        <p className='text-xl font-semibold text-gray-800 mb-2'>아직 생성된 단어가 없습니다!</p>
+        <p className='text-lg text-gray-600'>단어를 생성해주세요</p>
+    </div>
+)}
+
 
 
 
