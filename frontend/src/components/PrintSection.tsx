@@ -10,6 +10,7 @@ function PrintSection(props: {
     width: number;
     category: string;
     description: string;
+    nickname: string;
     onClose: () => void;
 }) {
     const popupRef = useRef<HTMLDivElement>(null);
@@ -24,7 +25,7 @@ function PrintSection(props: {
     const [printInfo, setPrintInfo] = useState<VocaPrint>({
         category: props.category,
         description: props.description,
-        nickname: userInfo? userInfo.nickname : "",
+        nickname: props.nickname,
         type: 0,
         template: 0
     });

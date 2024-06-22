@@ -5,6 +5,8 @@ import { getMyTheme, makeVocas } from "../api/bbobavoca/bbobavocaAxios";
 import ThemeCard from "../components/ThemeCard";
 import { Dropdown } from "flowbite-react";
 import Loading from "../components/Loading";
+import { useRecoilState } from "recoil";
+import { savedUserState } from "../atom";
 
 
 const Home = () => {
@@ -17,6 +19,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [themes, setThemes] = useState<VocaThemes>([]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [userInfo, setUserInfo] = useRecoilState(savedUserState);
 
   const [vocaForm, setVocaForm] = useState<MakeVocaCard>({
     category: "",
@@ -164,6 +167,7 @@ const Home = () => {
                                           category={theme.category}
                                           description={theme.description}
                                           color={theme.bgColor}
+                                          nickname={userInfo? userInfo.nickname : ""}
                                           onDelete={handleDeleteCard}
                                       />
                                   </div>
