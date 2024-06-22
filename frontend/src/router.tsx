@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import VocaPage from "./pages/VocaPage";
 import MyPage from "./pages/MyPage";
+import VocaVillage from "./pages/VocaVillage";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
         {
           path: "mypage",
           element: <MyPage />,
+        },
+        {
+          path: "voca-village",
+          element: <VocaVillage />,
         },
         {
           path: "/:category/:description",

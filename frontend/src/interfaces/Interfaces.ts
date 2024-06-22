@@ -101,3 +101,10 @@ export interface ThemeCardProps {
     color: string;
     onDelete: (category: string, description: string) => void;
 }
+
+export interface ThemeAllCardProps {
+    category: string;
+    description: string;
+    color: string;
+    nickname: string;
+}
