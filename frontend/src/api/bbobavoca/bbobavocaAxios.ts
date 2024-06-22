@@ -98,3 +98,26 @@ export const printVocas = async (
     );
     return response;
 };
+
+
+
+export const makeTimeline = async (
+    token:string,
+    message: string
+) => {
+    try {
+        const response = await bobbaVocaAxios.post(
+            "bbobavoca/make-timeline",
+            { msg: message },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error making timeline:', error);
+        throw error;
+    }
+};
