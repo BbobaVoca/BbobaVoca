@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import VocaPage from "./pages/VocaPage";
+import MyPage from "./pages/MyPage";
 
 const router = createBrowserRouter([
     {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
         {
           path: "register",
           element: <Register />,
+        },
+        {
+          path: "mypage",
+          element: <MyPage />,
         },
         {
           path: "/:category/:description",
