@@ -1,6 +1,4 @@
-import React from 'react';
 import { getSpeech } from './getSpeech';
-import { MdOutlineSpeaker, MdOutlineSpeakerNotes, MdSpeaker } from 'react-icons/md';
 
 function VocaCard(props: {
     bgColor: string;
