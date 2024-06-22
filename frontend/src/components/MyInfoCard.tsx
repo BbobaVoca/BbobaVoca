@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { savedUserState } from '../atom';
 import { removeUserFromLocalStorage } from '../utils/localStorage';
@@ -6,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 function MyInfoCard(props: {
     onLogout: () => void;
+    onClose: () => void;
 }) {
     const [userInfo, setUserInfo] = useRecoilState(savedUserState);
     const navigate = useNavigate();
@@ -19,7 +19,9 @@ function MyInfoCard(props: {
 
     const handleMyPageButton = () => {
         navigate("/mypage");
+        props.onClose();
     }
+
 
     return (
         <div className={`right-0 top-0 mt-24 mr-10 fixed bg-white rounded-lg ml-2 mr-2 shadow-inner outline outline-1 outline-neutral-200 z-10`}>
