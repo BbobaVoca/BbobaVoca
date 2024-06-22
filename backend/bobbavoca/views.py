@@ -164,7 +164,9 @@ class CardsGenerateView(APIView):
             words = res.split('/')
             
             for word in words[:8]:
-                example = get_example(word)
+                word_list = []
+                example = get_example(word, word_list)
+                word_list.append(example)
                 other = get_foreign_word(word, language)
                 
                 # 이미지 생성 및 URL 가져오기
@@ -352,7 +354,6 @@ class CategoryDeleteView(APIView):
     
     
 class AllCategoriesView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # 모든 카테고리 조회
@@ -371,6 +372,20 @@ class AllCategoriesView(APIView):
     
     
     
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
+
+def resize_image(image, target_height):
+    """
+    이미지의 세로 길이를 target_height에 맞추고, 가로 길이는 비율을 유지하여 조정합니다.
+    """
+    width, height = image.size
+    aspect_ratio = width / height
+    new_height = target_height
+    new_width = int(new_height * aspect_ratio)
+    resized_image = image.resize((new_width, new_height), Image.ANTIALIAS)
+    return resized_image
+
 class CreateTemplateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -415,18 +430,20 @@ class CreateTemplateView(APIView):
             return Response({"error": "No cards found for the given category and description."}, status=status.HTTP_404_NOT_FOUND)
 
         # 이미지 생성 로직
-        template_image_path = '/home/honglee0317/BobbaVoca/backend/template.png'  # 템플릿 이미지 경로
+        template_image_path = '/home/honglee0317/BobbaVoca/backend/template2.png'  # 템플릿 이미지 경로
         try:
             template_image = Image.open(template_image_path)
-            print(template_image)
         except Exception as e:
             return Response({"error": f"Error opening template image: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         draw = ImageDraw.Draw(template_image)
         font_path = "/home/honglee0317/BobbaVoca/backend/fonts/Maplestory_Light.ttf"
+        font_path_kor = "/home/honglee0317/BobbaVoca/backend/fonts/온글잎 의청수 시우체.ttf"  
         try:
             font = ImageFont.truetype(font_path, 24)  # 폰트와 크기 설정
-            print(font)
+            font_title = ImageFont.truetype(font_path_kor, 40)  # 폰트와 크기 설정
+            font_kor = ImageFont.truetype(font_path_kor, 24)  # 폰트와 크기 설정
+            
         except Exception as e:
             return Response({"error": f"Error loading font: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -434,19 +451,18 @@ class CreateTemplateView(APIView):
         card_width = 794 // 2
         card_height = 1123 // 4
 
-        print("card gen...")
         for idx, card in enumerate(cards[:8]):  # 최대 8개의 카드를 배치
             row = idx // 2
             col = idx % 2
-            x = col * card_width
-            y = row * card_height
+            x = col * card_width + 50
+            y = row * card_height + 55
 
             # 카드 이미지 열기
             try:
                 response = requests.get(card.src)
                 response.raise_for_status()
                 card_image = Image.open(io.BytesIO(response.content))
-                card_image = card_image.resize((card_width, card_height // 2))  # 이미지 크기 조정
+                card_image = resize_image(card_image, card_height // 2)  # 이미지 크기 조정
                 if card_image.mode == 'RGBA':
                     card_image = card_image.convert('RGB')
                 template_image.paste(card_image, (x, y))
@@ -454,17 +470,21 @@ class CreateTemplateView(APIView):
                 print(f"Error loading image for {card.kor}: {e}")
 
             # 텍스트 추가
-            draw.text((x + 10, y + card_height // 2 + 10), f'KOR: {card.kor}', font=font, fill='black')
-            draw.text((x + 10, y + card_height // 2 + 40), f'Other: {card.other}', font=font, fill='black')
-            draw.text((x + 10, y + card_height // 2 + 70), f'Example: {card.example}', font=font, fill='black')
+            draw.text((x + 170, y + card_height // 2 - 100), f' {card.kor}', font=font_title, fill='black')
+            draw.text((x + 180, y + card_height // 2 - 40), f' {card.other}', font=font, fill='black')
+            draw.text((x + 10, y + card_height // 2 + 30), f' {card.example}', font=font_kor, fill='black')
 
         # 결과 이미지를 저장하거나 반환
-        output = io.BytesIO()
-        try:
-            template_image.save(output, format='JPEG')
-        except Exception as e:
-            print("save error")
-            return Response({"error": f"Error saving image: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        output.seek(0)
+        if not os.path.exists(settings.MEDIA_ROOT):
+            os.makedirs(settings.MEDIA_ROOT)
 
-        return Response({"message": "Image created successfully", "image": output.getvalue().decode('latin1')}, status=status.HTTP_200_OK)
+     
+        filename = f'template_01.png'
+        filepath = os.path.join(settings.MEDIA_ROOT, filename)
+        try:
+            template_image.save(filepath, format='PNG')
+        except Exception as e:
+            return Response({"error": f"Error saving image: {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        image_url = request.build_absolute_uri(settings.MEDIA_URL + filename)
+        return Response({"message": "Image created successfully", "image_url": image_url}, status=status.HTTP_200_OK)
