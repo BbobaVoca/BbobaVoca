@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { VocaTheme, VocaThemeCard, SuccessResponse, AllVocaTheme, AllVocaThemeCard, VocaPrint, AllVocaThemes, VocaThemes } from "../../interfaces/Interfaces";
+import { VocaTheme, VocaThemeCard, SuccessResponse, AllVocaTheme, AllVocaThemeCard, VocaPrint, AllVocaThemes, VocaThemes, VocaTimeline } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 
@@ -14,7 +14,7 @@ export const makeVocas = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/make",
         { category, description, age, language },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -25,7 +25,7 @@ export const getMyTheme = async (
 ): Promise<AxiosResponse<VocaThemes> | null> => {
     const response = await bobbaVocaAxios.get(
         "bbobavoca/myvoca",
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -39,7 +39,7 @@ export const getMyVocaCards = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/select-myvoca",
         { category, description },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -53,7 +53,7 @@ export const removeVocaTheme = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/remove",
         { category, description },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -77,7 +77,7 @@ export const getSelectVocas = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/select-voca",
         { category, description, nickname },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -94,30 +94,45 @@ export const printVocas = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/print",
         { category, description, nickname, type, template },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
 
 
-
 export const makeTimeline = async (
-    token:string,
-    message: string
-) => {
-    try {
-        const response = await bobbaVocaAxios.post(
-            "bbobavoca/make-timeline",
-            { msg: message },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
-        return response.data;
-    } catch (error) {
-        console.error('Error making timeline:', error);
-        throw error;
-    }
+    token: string,
+    msg: string
+): Promise<AxiosResponse<SuccessResponse> | null> => {
+    const response = await bobbaVocaAxios.post(
+        "bbobavoca/make-timeline",
+        { msg },
+        { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response;
+};
+
+// 타임라인 데이터 가져오기
+export const getTimeline = async (
+    token: string
+): Promise<VocaTimeline> => {
+    const response = await bobbaVocaAxios.get(
+        "bbobavoca/timeline",
+        {
+            headers: {Authorization: `Bearer ${token}`}
+        });
+    return response.data as VocaTimeline;
+};
+
+export const updateProfile = async(
+    token: string,
+    profile: string
+): Promise<AxiosResponse<SuccessResponse>|null> => {
+    const response = await bobbaVocaAxios.post(
+        "bbobavoca/profile-update",
+        {profile },
+        { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response;
+
 };

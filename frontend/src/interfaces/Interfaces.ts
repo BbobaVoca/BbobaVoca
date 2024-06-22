@@ -101,3 +101,18 @@ export interface ThemeCardProps {
     color: string;
     onDelete: (category: string, description: string) => void;
 }
+
+export interface TimelineMessage {
+    babies: Baby;
+    msg: string;
+    vocas: VocaData[];
+}
+
+export interface VocaData {
+    timestamp: string;
+    voca: string[];
+}
+
+export interface VocaTimeline {
+    timelineMessages: TimelineMessage[];
+}
