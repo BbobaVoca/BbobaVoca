@@ -121,18 +121,44 @@ export const getTimeline = async (
         {
             headers: {Authorization: `Bearer ${token}`}
         });
-    return response.data as VocaTimeline;
+    return response.data;
 };
 
-export const updateProfile = async(
-    token: string,
-    profile: string
-): Promise<AxiosResponse<SuccessResponse>|null> => {
-    const response = await bobbaVocaAxios.post(
-        "bbobavoca/profile-update",
-        {profile },
-        { headers: { Authorization: `Bearer ${token}` } }
-    );
-    return response;
+// export const updateProfile = async (
+//     token: string,
+//     //babies:string,
+//     file: File,
 
+// ): Promise<AxiosResponse<SuccessResponse> | null> => {
+//     const formData = new FormData();
+//     //formData.append('name',babies ); // 'babyName'는 서버에서 정의한 필드명
+//     formData.append('profile', file); // 'profile'는 서버에서 정의한 파일 필드명
+
+//     const response = await bobbaVocaAxios.post(
+//         "members/profile-update",
+//         formData,
+//         {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//                 'Content-Type': 'multipart/form-data'
+//             }
+//         }
+//     );
+//     return response;
+// };
+
+// 프로필 올리기
+export const updateProfile = async (
+    token: string,
+    formData: FormData
+): Promise<AxiosResponse<SuccessResponse> | null> => {
+    const response = await bobbaVocaAxios.post(
+        "members/profile-update",
+        formData, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response;
 };

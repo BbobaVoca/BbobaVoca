@@ -105,12 +105,14 @@ export interface ThemeCardProps {
 export interface TimelineMessage {
     babies: Baby;
     msg: string;
-    vocas: VocaData[];
+    vocas: VocaData;
 }
 
 export interface VocaData {
-    timestamp: string;
-    voca: string[];
+    [key: number]: {
+        timestamp: string;
+        voca: string[];
+    };
 }
 
 export interface VocaTimeline {
