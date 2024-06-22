@@ -21,7 +21,7 @@ const VocaPage = () => {
     const { nickname } = useParams() as { nickname: string };
     const [saveVocaCards, setSaveVocaCards] = useRecoilState(vocaCardsInfoState);
     const [vocaCards, setVocaCards] = useState<VocaThemeCard>();
-    const [containerWidth, setContainerWidth] = useRecoilState(widthInfoState);
+    const [containerWidth, setContainerWidth] = useState<number>(0);
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [selectedCardIndex, setSelectedCardIndex] = useState<number>(0);
     const [selectedCardInfo, setSelectedCardInfo] = useState(vocaCards?.cards[0]);
@@ -72,12 +72,15 @@ const VocaPage = () => {
 
     useEffect(() => {
         const updateContainerWidth = () => {
-            if (contentContainerRef.current) {
-                setContainerWidth(contentContainerRef.current.offsetWidth);
+          const contentContainer = document.getElementById('content-container');
+          if (contentContainer) {
+                const width = contentContainer.offsetWidth;
+                setContainerWidth(width);
+                console.log(containerWidth);
             }
         };
 
-        setTimeout(updateContainerWidth, 0); // DOM 업데이트 후에 너비 가져오기
+        updateContainerWidth();
         window.addEventListener('resize', updateContainerWidth);
 
         return () => {
@@ -158,10 +161,10 @@ const VocaPage = () => {
                     </div>
                 </div>
             </div>
-            {showPopup && containerWidth && (
+            {showPopup && (
             <>
                 <PrintSection
-                    width={containerWidth}
+                    width={containerWidth===0? 786 : containerWidth}
                     category={vocaCards.category}
                     description={vocaCards.description}
                     nickname={nickname}
