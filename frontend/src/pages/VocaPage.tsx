@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { MdKeyboardArrowRight, MdKeyboardArrowLeft, MdPrint } from 'react-icons/md';
+import { MdPrint } from 'react-icons/md';
 import { FormEvent, useEffect, useState } from "react";
 import { VocaThemeCard } from "../interfaces/Interfaces";
 import VocaNameCard from "../components/VocaNameCard";
@@ -54,7 +54,20 @@ const VocaPage = () => {
         if (token) {
           fetchVocaCards();
         }
-      }, [token, vocaCards]);
+    }, [token]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (vocaCards?.cards.length !== 8) {
+                fetchVocaCards();
+                console.log("ggg");
+            } else {
+                clearInterval(interval);
+            }
+        }, 7000); // 7000ms = 7초
+
+        return () => clearInterval(interval);
+    }, [vocaCards]);
 
     useEffect(() => {
         const updateContainerWidth = () => {
