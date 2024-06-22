@@ -145,9 +145,7 @@ const VocaPage = () => {
                         </div>
                     </div>
                 </div>
-            </div>
-
-            {showPopup && (
+                {showPopup && (
                 <>
                     <PrintSection
                         width={containerWidth}
@@ -157,7 +155,8 @@ const VocaPage = () => {
                         onClose={() => setShowPopup(false)}
                     />
                 </>
-            )}
+                )}
+            </div>
             </>
         ) : (
             <>
