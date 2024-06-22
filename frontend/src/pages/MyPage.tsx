@@ -4,12 +4,11 @@ import { savedUserState } from '../atom';
 import { FaEdit } from 'react-icons/fa'; // Importing the edit icon from react-icons
 import { useState, useEffect } from "react";
 import { makeTimeline, getTimeline, updateProfile } from "../api/bbobavoca/bbobavocaAxios"; // 백엔드 API 호출 함수 import
-import { VocaTimeline } from '../interfaces/Interfaces'; // 정의된 타입 임포트
 import { profile } from "console";
 import handleLogoutButton from "../components/MyInfoCard"
 import { removeUserFromLocalStorage, saveUserToLocalStorage } from '../utils/localStorage';
 import { user } from "../api/user/userAxios";
-import { TimelineMessage, VocaData } from "../interfaces/Interfaces";
+import { TimelineMessage } from "../interfaces/Interfaces";
 
 const MyPage = () => {
     const navigate = useNavigate();
@@ -20,30 +19,24 @@ const MyPage = () => {
     const [showPopup2, setShowPopup2] = useState(false);
     const [message, setMessage] = useState(""); // State for the message input
     const [profile, setProfile] = useState<File | null>(null); // State for the profile file input
-    const [timeline, setTimeline] = useState<VocaTimeline | null>(null); // 타임라인 데이터 상태
+    const [timeline, setTimeline] = useState<TimelineMessage>(); // 타임라인 데이터 상태
     const [profileImage, setProfileImage] = useState(null);
-    const [timelineInfo, setTimelineInfo] = useState<VocaTimeline | null>();
 
-    // const getVocaLength = (vocas: VocaData): number => {
-    //     console.log(Object.keys(vocas).length)
-    //     return Object.keys(vocas).length;
-
-    // };
-    // getVocaLength(vocas)
+    const fetchData = async () => {
+        if (token) {
+            const response = await getTimeline(token);
+            if (response && response.data) {
+                setTimeline(response.data);
+                // console.log(timeline);
+            }
+        }
+    };
 
     useEffect(() => {
         if (token) {
-            // 타임라인 데이터 가져오기
-            getTimeline(token)
-                .then((data) => {
-                    console.log('Received timeline data:', data);
-                    setTimeline(data); // 데이터 상태 업데이트
-                })
-                .catch((error) => {
-                    console.error('Error fetching timeline data:', error);
-                });
+          fetchData();
         }
-    }, [token]);
+      }, [token]);
 
     const handleLogoutButton = () => {
         localStorage.removeItem('token');
@@ -58,6 +51,10 @@ const MyPage = () => {
     };
 
     const handlePopUpButtonClick2 = () => {
+        // 타임라인 데이터 테스트
+        if (timeline && timeline.vocas && timeline.vocas[0]) {
+            console.log(timeline.vocas[0].voca.length);
+        }
         setShowPopup2(true);
     };
 

@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { VocaTheme, VocaThemeCard, SuccessResponse, AllVocaTheme, AllVocaThemeCard, VocaPrint, AllVocaThemes, VocaThemes, VocaTimeline } from "../../interfaces/Interfaces";
+import { VocaTheme, VocaThemeCard, SuccessResponse, AllVocaThemeCard, AllVocaThemes, VocaThemes, TimelineMessage } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 
@@ -115,14 +115,15 @@ export const makeTimeline = async (
 // 타임라인 데이터 가져오기
 export const getTimeline = async (
     token: string
-): Promise<VocaTimeline> => {
+): Promise<AxiosResponse<TimelineMessage>> => {
     const response = await bobbaVocaAxios.get(
         "bbobavoca/timeline",
         {
-            headers: {Authorization: `Bearer ${token}`}
+            headers: { Authorization: `Bearer ${token}` }
         });
-    return response.data;
+    return response;
 };
+
 
 // export const updateProfile = async (
 //     token: string,
