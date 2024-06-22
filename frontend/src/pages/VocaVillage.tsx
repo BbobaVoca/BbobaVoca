@@ -6,7 +6,6 @@ import { getAllVocaTheme } from "../api/bbobavoca/bbobavocaAxios";
 import HeroSection from "../components/HeroSection";
 import VillageThemeCard from "../components/VillageThemeCard";
 
-
 const VocaVillage = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
@@ -15,14 +14,13 @@ const VocaVillage = () => {
     const [showHeroSection, setShowHeroSection] = useState(true);
     const [searchAll, setSearchAll] = useState<string>("");
     const [themes, setThemes] = useState<AllVocaThemes>([]);
+    const [filteredThemes, setFilteredThemes] = useState<AllVocaThemes>([]);
 
     const fetchCards = async () => {
-        if (token) {
-            const cardResponse = await getAllVocaTheme();
-            if (cardResponse && cardResponse.data) {
-              setThemes(cardResponse.data);
-              console.log(cardResponse.data);
-            }
+        const cardResponse = await getAllVocaTheme();
+        if (cardResponse && cardResponse.data) {
+          setThemes(cardResponse.data);
+          setFilteredThemes(cardResponse.data);
         }
     };
 
@@ -38,6 +36,15 @@ const VocaVillage = () => {
           setShowHeroSection(false);
         }
     }, [loggedIn, token]);
+
+    useEffect(() => {
+        const filtered = themes.filter(
+            theme => 
+                theme.category.toLowerCase().includes(searchAll.toLowerCase()) ||
+                theme.description.toLowerCase().includes(searchAll.toLowerCase())
+        );
+        setFilteredThemes(filtered);
+    }, [searchAll, themes]);
 
     return (
         <>
@@ -58,11 +65,11 @@ const VocaVillage = () => {
                                     placeholder="검색어를 입력해주세요"
                                 />
                             </div>
-                            {themes.length === 0 ? (
+                            {filteredThemes.length === 0 ? (
                                 <div className="bg-gray-50 border border-gray-200 text-xs font-normal rounded-md mt-3 px-3 py-5 mx-3 text-center">단어 카드가 없습니다.</div>
                             ) : (
                                 <div className='grid grid-cols-1 pt-2'>
-                                    {themes.map((theme, index) => (
+                                    {filteredThemes.map((theme, index) => (
                                         <div key={index} className='flex flex-col w-full'>
                                             <VillageThemeCard
                                                 category={theme.category}
