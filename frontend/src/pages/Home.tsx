@@ -15,7 +15,7 @@ const Home = () => {
   const [showHeroSection, setShowHeroSection] = useState(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [themes, setThemes] = useState<VocaThemes>([{ category: "", description: "", bgColor: "bg-pink-100" }]);
+  const [themes, setThemes] = useState<VocaThemes>([]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const [vocaForm, setVocaForm] = useState<MakeVocaCard>({

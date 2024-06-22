@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { savedUserState } from '../atom';
 import { removeUserFromLocalStorage } from '../utils/localStorage';
+import { useNavigate } from 'react-router-dom';
 
 function MyInfoCard(props: {
     onLogout: () => void;
+    onClose: () => void;
 }) {
     const [userInfo, setUserInfo] = useRecoilState(savedUserState);
+    const navigate = useNavigate();
 
     const handleLogoutButton = () => {
         localStorage.removeItem('token');
@@ -14,6 +16,12 @@ function MyInfoCard(props: {
         setUserInfo(null);
         props.onLogout();
     };
+
+    const handleMyPageButton = () => {
+        navigate("/mypage");
+        props.onClose();
+    }
+
 
     return (
         <div className={`right-0 top-0 mt-24 mr-10 fixed bg-white rounded-lg ml-2 mr-2 shadow-inner outline outline-1 outline-neutral-200 z-10`}>
@@ -48,7 +56,7 @@ function MyInfoCard(props: {
                             </button>
                         </div>
                     </div>
-                    <div className='w-full border-t mt-8 cursor-pointer'>
+                    <div className='w-full border-t mt-8 cursor-pointer' onClick={handleMyPageButton}>
                         <p className='font-semibold text-gray-700 pt-5 pl-5'>아이 단어 성장일지</p>
                     </div>
                     <div className='w-full border-t mt-5 cursor-pointer' onClick={handleLogoutButton}>

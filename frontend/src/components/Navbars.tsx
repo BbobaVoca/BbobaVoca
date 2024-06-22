@@ -115,7 +115,10 @@ function Navbars() {
     </Navbar>
     {activeMyInfo && (
       <>
-      <MyInfoCard onLogout={handleLogout}/>
+      <MyInfoCard
+        onLogout={handleLogout}
+        onClose={() => setActiveMyInfo(false)}
+      />
       </>
     )}
     </>
