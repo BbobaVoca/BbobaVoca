@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { MdDelete } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import { ThemeAllCardProps } from '../interfaces/Interfaces';
 
@@ -9,7 +8,7 @@ const VillageThemeCard: React.FC<ThemeAllCardProps> = ({ category, description, 
     const navigate = useNavigate(); 
 
     const handleCardClick = () => {
-        navigate(`/${category}/${description}`);
+        navigate(`/${category}/${description}/${nickname}`);
     };
     
     return (

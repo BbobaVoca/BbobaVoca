@@ -35,7 +35,7 @@ const router = createBrowserRouter([
           element: <VocaVillage />,
         },
         {
-          path: "/:category/:description",
+          path: "/:category/:description/:nickname",
           element: <VocaPage />,
         },
       ],

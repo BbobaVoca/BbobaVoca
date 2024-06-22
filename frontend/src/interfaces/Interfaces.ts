@@ -99,6 +99,7 @@ export interface ThemeCardProps {
     category: string;
     description: string;
     color: string;
+    nickname: string;
     onDelete: (category: string, description: string) => void;
 }
 

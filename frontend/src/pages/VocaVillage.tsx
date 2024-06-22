@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import InputForm from "../components/InputForm";
 import { useEffect, useState } from "react";
 import { AllVocaThemes } from "../interfaces/Interfaces";
@@ -7,7 +6,6 @@ import HeroSection from "../components/HeroSection";
 import VillageThemeCard from "../components/VillageThemeCard";
 
 const VocaVillage = () => {
-    const navigate = useNavigate();
     const token = localStorage.getItem('token');
 
     const [loggedIn, setLoggedIn] = useState(false);
