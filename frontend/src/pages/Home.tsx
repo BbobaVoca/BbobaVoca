@@ -40,7 +40,6 @@ const Home = () => {
         const cardResponse = await getMyTheme(token);
         if (cardResponse && cardResponse.data) {
           setThemes(cardResponse.data);
-          console.log(cardResponse.data);
         }
     }
   };
@@ -75,9 +74,20 @@ const Home = () => {
   }, [token]);
 
   useEffect(() => {
-    if (token) {
-      fetchCards();
-    }
+    const interval = setInterval(() => {
+      const newTheme = {
+        category: vocaForm.category,
+        description: vocaForm.description,
+      };
+
+      if (themes.some(theme => theme.category === newTheme.category && theme.description === newTheme.description)) {
+        clearInterval(interval);
+      } else {
+        fetchCards();
+      }
+    }, 5000); // 5000ms = 5초
+
+    return () => clearInterval(interval);
   }, [themes]);
 
   useEffect(() => {
@@ -123,6 +133,7 @@ const Home = () => {
     e.preventDefault();
     if(token) {
       setShowPopup(false);
+
       const successRespose = await makeVocas(token, vocaForm.category, vocaForm.description, vocaForm.age, vocaForm.language);
       if (successRespose) {
         fetchCards();
