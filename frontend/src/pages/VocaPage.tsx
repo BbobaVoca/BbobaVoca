@@ -9,6 +9,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import { vocaCardsInfoState } from "../atom";
 import { useRecoilState } from "recoil";
 import PrintSection from "../components/PrintSection";
+import Loading from "../components/Loading";
 
 const VocaPage = () => {
     const navigate = useNavigate();
@@ -44,7 +45,7 @@ const VocaPage = () => {
             if (cardResponse && cardResponse.data) {
                 setVocaCards(cardResponse.data);
                 setSaveVocaCards(cardResponse.data);
-                setSelectedCardInfo(cardResponse.data.cards[0]);
+                if (!selectedCardInfo) setSelectedCardInfo(cardResponse.data.cards[0]);
             }
         }
     };
@@ -53,7 +54,7 @@ const VocaPage = () => {
         if (token) {
           fetchVocaCards();
         }
-      }, [token]);
+      }, [token, vocaCards]);
 
     useEffect(() => {
         const updateContainerWidth = () => {
@@ -78,9 +79,9 @@ const VocaPage = () => {
 
     return (
         <>
-        {vocaCards && selectedCardInfo && (
+        {vocaCards && selectedCardInfo ? (
             <>
-            <div className='flex w-screen h-full justify-center self-stretch text-gray-700 bg-light-green'>
+            <div className='flex w-screen min-h-screen justify-center self-stretch text-gray-700 bg-light-green'>
                 <div className='flex flex-1 flex-col md:flex-row box-border max-w-screen-xl items-center justify-start px-5 md:px-20 xl:px-10 pt-20 pb-20'>
                     <div className='flex-1 flex-grow-4 self-start max-w-none prose-lg mx-4 text-gray-700'>
                         <div id="content-container" className='mx-auto md:w-[80%]'>
@@ -157,6 +158,10 @@ const VocaPage = () => {
                     />
                 </>
             )}
+            </>
+        ) : (
+            <>
+            <Loading />
             </>
         )}
         
