@@ -26,7 +26,7 @@ const ThemeCard: React.FC<ThemeCardProps> = ({ category, description, color, nic
     
     return (
         <>
-            <div className='flex flex-1 bg-white rounded-lg ml-1 mr-1 shadow-inner outline outline-1 outline-neutral-200 hover:outline-blue-500/50'>
+            <div className='flex flex-1 bg-white rounded-lg ml-1 mr-1 mb-2 shadow-inner outline outline-1 outline-neutral-200 hover:outline-blue-500/50'>
                 <figure className='relative w-full h-full flex flex-col cursor-pointer'>
                     <div className="relative">
                         <div className={`h-40 rounded-lg rounded-b-none object-cover w-full ${color}`}>

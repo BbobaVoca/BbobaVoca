@@ -160,7 +160,7 @@ const Home = () => {
                       {themes.length === 0 ? (
                           <div className="bg-gray-50 border border-gray-200 text-xs font-normal rounded-md mt-3 px-3 py-5 mx-3 text-center">단어 카드가 없습니다.</div>
                       ) : (
-                          <div className='grid grid-cols-1 md:grid-cols-4 gap-1 pt-5'>
+                          <div className='grid grid-cols-1 md:grid-cols-4 gap-1 pt-3'>
                               {themes.map((theme, index) => (
                                   <div key={index} className='flex flex-col w-full'>
                                       <ThemeCard
