@@ -231,7 +231,7 @@ const MyPage = () => {
                                                 <div className="mt-10 items-center">
                                                     {timeline.vocas.map((vocaData, vocaIndex) => (
                                                         <div key={vocaIndex} className='flex items-center mb-2'>
-                                                            <span className='font-uhbeezziba font-semibold mr-2 text-lg lg:text-2xl'>{vocaData.timestamp}</span>
+                                                            <span className='font-uhbeezziba font-semibold mr-10 text-lg lg:text-2xl'>{vocaData.timestamp}</span>
                                                             <span className="font-uhbeezziba text-lg lg:text-2xl">{vocaData.voca.join(', ')}</span>
                                                         </div>
                                                     ))}
