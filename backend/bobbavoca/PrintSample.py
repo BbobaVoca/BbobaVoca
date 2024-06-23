@@ -28,6 +28,8 @@ def epson_print(local_file_path = '/home/honglee0317/BobbaVoca/backend/SampleDoc
     SECRET = epson_key
     DEVICE = epson_addr
 
+    print(DEVICE)
+
     auth = base64.b64encode((CLIENT_ID + ':' + SECRET).encode()).decode()
 
     query_param = {

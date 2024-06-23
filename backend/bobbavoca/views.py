@@ -225,7 +225,7 @@ class CardsGenerateView(APIView):
                 s3_url = upload_to_aws(file_obj, 'possg', f"{user.nickname}/cards/{category_name}/{word}.png")
                 
                 # 예시 날짜
-                example_date = datetime.date(2024, 6, 21)
+                example_date = datetime.date(2024, 6, 19)
                 
                 card_data = {
                     "src": s3_url,

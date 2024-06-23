@@ -65,7 +65,8 @@ def get_korean_word(word):
 
 
 def get_image(example_sentence):
-    prompt = f"""Create a picture for a flashcard that a child would learn. The picture should be based on the sentence: "{example_sentence}". Do not include any text in the image."""
+    #prompt = f"""Create a picture for a flashcard that a child would learn. The picture should be based on the sentence: "{example_sentence}". Do not include any text in the image."""
+    prompt = f"""A simple picture which is based on following sentence: "{example_sentence}". The picture doesn't contain any text on it."""
     client = openai.OpenAI(api_key=OPENAI_API_KEY)
     response = client.images.generate(
         model="dall-e-3",
