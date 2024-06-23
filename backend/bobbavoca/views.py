@@ -43,9 +43,13 @@ from django.shortcuts import render, get_object_or_404
 from config.settings import SECRET_KEY
 import random
 
+import datetime
+
 import sys
 sys.path.append("/home/honglee0317/BobbaVoca/backend/bobbavoca")
 from PrintSample import *
+
+from config.my_settings import *
 
 pastelColors = [
     "bg-red-100",
@@ -94,11 +98,33 @@ pastelColors = [
     "bg-rose-300"
 ]
 
+def draw_text_with_wrapping(draw, text, position, font, max_width):
+    lines = []
+    line = ""
+    
+    for word in text.split():
+        # 다음 단어를 추가했을 때의 너비를 계산
+        test_line = f"{line} {word}".strip()
+        if draw.textsize(test_line, font=font)[0] <= max_width:
+            line = test_line
+        else:
+            lines.append(line)
+            line = word
+    
+    # 마지막 라인 추가
+    lines.append(line)
+    
+    # 텍스트 출력
+    y = position[1]
+    for line in lines:
+        draw.text((position[0], y), line, font=font, fill='black')
+        y += font.getsize(line)[1]
+
 
 def upload_to_aws(file_obj, bucket, s3_file_name):
     session = boto3.Session(
-        aws_access_key_id='AKIA6ODU6XD4OCV4IJAU',
-        aws_secret_access_key='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',
+        aws_access_key_id= aws_key_id,
+        aws_secret_access_key=aws_access_key,
         region_name='us-east-2'
     )
     s3 = session.client('s3')
@@ -145,9 +171,16 @@ class CardsGenerateView(APIView):
         category_name = request.data.get('category')
         description = request.data.get('description')
         language = request.data.get('language')
+        age = request.data.get('age')
+        
+        eng_description = translate_sentence_eng(description)
         
         idx_color = random.randrange(0, len(pastelColors))
         bgColor = pastelColors[idx_color]
+
+        # 중복된 카테고리 존재 여부 확인
+        if Category.objects.filter(name=category_name, description = description, user=user).exists():
+            return Response({"detail": "Category already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Category 데이터 생성
         category_data = {
@@ -163,7 +196,7 @@ class CardsGenerateView(APIView):
             category = category_serializer.save()
 
             # GPT를 활용하여 단어 리스트 생성
-            res = get_words(category_name, description, 2, 1)
+            res = get_english_words(category_name, eng_description, age)
             
             words = res.split('/')
             
@@ -171,12 +204,17 @@ class CardsGenerateView(APIView):
             
             for word in words:
                 word_list = []
+                kor_word = get_korean_word(word)
                 example = get_example(word, word_list)
-                word_list.append(example)
-                other = get_foreign_word(word, language)
                 
                 # 이미지 생성 및 URL 가져오기
                 image_url = get_image(example)
+                
+                example = translate_sentence(example)
+                word_list.append(example)
+                other = get_foreign_word(kor_word, language)
+                
+               
                 print(image_url)
                 # URL에서 이미지 다운로드
                 response = requests.get(image_url)
@@ -186,16 +224,18 @@ class CardsGenerateView(APIView):
                 # S3 업로드
                 s3_url = upload_to_aws(file_obj, 'possg', f"{user.nickname}/cards/{category_name}/{word}.png")
                 
+                # 예시 날짜
+                example_date = datetime.date(2024, 6, 21)
+                
                 card_data = {
                     "src": s3_url,
-                    "kor": word,
+                    "kor": kor_word,
                     "other": other,
                     "example": example,
-                    "timestamp": timezone.now().date()  # 생성 일자 설정
+                    "timestamp": example_date,
+                    #"timestamp": timezone.now().date()  # 생성 일자 설정
                 }
                 card_serializer = CardSerializer(data=card_data)
-                
-
                 
                 if card_serializer.is_valid():
                     card_serializer.save(category=category)  # 여기서 category를 명시적으로 설정
@@ -210,6 +250,7 @@ class CardsGenerateView(APIView):
             return Response(response, status=status.HTTP_201_CREATED)
         else:
             return Response(category_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
         
@@ -479,6 +520,8 @@ class CreateTemplateView(APIView):
                 font = ImageFont.truetype(font_path, 24)  # 폰트와 크기 설정
                 font_title = ImageFont.truetype(font_path_kor, 40)  # 폰트와 크기 설정
                 font_kor = ImageFont.truetype(font_path_kor, 24)  # 폰트와 크기 설정
+                
+                
             else:
                 font_cat =  ImageFont.truetype(font_path, 32)
                 font = ImageFont.truetype(font_path, 16)  # 폰트와 크기 설정
@@ -515,11 +558,16 @@ class CreateTemplateView(APIView):
                 # 텍스트 추가
                 draw.text((x + 170, y + card_height // 2 - 100), f' {card.kor}', font=font_title, fill='black')
                 draw.text((x + 180, y + card_height // 2 - 40), f' {card.other}', font=font, fill='black')
-                draw.text((x + 10, y + card_height // 2 + 30), f' {card.example}', font=font_kor, fill='black')
+                #draw.text((x + 10, y + card_height // 2 + 30), f' {card.example}', font=font_kor, fill='black')
+                
+                max_width = 300
+
+                # 줄바꿈 함수 호출
+                draw_text_with_wrapping(draw, f'{card.example}', (x + 10, y + card_height // 2 + 30), font, max_width)
 
             else:
                 # 텍스트 추가
-                draw.text((340, 50), f' {category.name}', font=font_cat, fill='black')
+                draw.text((270, 50), f' {category.description}', font=font_cat, fill='black')
                 draw.text((x - 15, y + card_height // 2 + 5), f' {card.kor}', font=font_title, fill='black')
                 #draw.text((x + 50, y + card_height // 2 + 5), f' {card.other}', font=font, fill='black')  
                 draw.text((x - 10, y + card_height // 2 + 25), f' {card.other}', font=font, fill='black')
@@ -589,7 +637,7 @@ class UserTimelineView(APIView):
 
             # 해당 날짜의 메시지 가져오기
             try:
-                message = Message.objects.get(user=user, timestamp=date)
+                message = Message.objects.get(user=user)
                 msg = message.msg
             except Message.DoesNotExist:
                 msg = ""
@@ -602,7 +650,7 @@ class UserTimelineView(APIView):
                 "timestamp": date.strftime('%Y-%m-%d'),
                 "voca": voca_arr
             })
-
+            timelines.sort(key = lambda x:x['timestamp'])
         # 응답 데이터 구성
         response_data = {
             "babies": baby_data,
@@ -645,6 +693,7 @@ class CreateTimelineView(APIView):
 
         # 요청 바디에서 데이터 추출
         msg = request.data.get('msg')
+        print("received msg:", msg)
         if not msg:
             return Response({"error": "Message is required."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -652,13 +701,15 @@ class CreateTimelineView(APIView):
         today = timezone.now().date()
 
         # 메시지가 이미 존재하는지 확인
-        message, timestamp = Message.objects.update_or_create(
-            user=user,
-            timestamp=today,
-            defaults={'msg': msg}
-        )
+        messages = Message.objects.filter(user=user)
+        if messages.exists():
+            message = messages.first()
+            message.msg = msg
+            message.save()
+            print(message)
+            response_msg = "Message updated successfully."
+        else:
+            message = Message.objects.create(user=user, msg=msg)
+            response_msg = "Message created successfully."
 
-
-        # Message 데이터 직렬화 및 응답 반환
-        serializer = MessageSerializer(message)
-        return Response({"message": "success response"}, status=status.HTTP_201_CREATED)
+        return Response({"message": response_msg}, status=status.HTTP_201_CREATED)

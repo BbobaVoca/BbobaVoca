@@ -29,7 +29,7 @@ class Card(models.Model):
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     msg = models.TextField()
-    timestamp = models.DateField(auto_now_add=True)
+    #timestamp = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.msg[:20]}"
+        return f"{self.user.nickname} - {self.msg[:20]}"
