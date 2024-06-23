@@ -21,6 +21,7 @@ const MyPage = () => {
     const [profile, setProfile] = useState<File | null>(null); // State for the profile file input
     const [timeline, setTimeline] = useState<TimelineMessage>(); // 타임라인 데이터 상태
     const [profileImage, setProfileImage] = useState(null);
+    const [shouldFetchData, setShouldFetchData] = useState(false); // State to track data refresh
 
     const fetchData = async () => {
         if (token) {
@@ -38,6 +39,13 @@ const MyPage = () => {
         }
     }, [token]);
 
+    useEffect(() => {
+        if (shouldFetchData) {
+            fetchData();
+            setShouldFetchData(false);
+        }
+    }, [shouldFetchData]);
+
     const handleLogoutButton = () => {
         localStorage.removeItem('token');
         removeUserFromLocalStorage();
@@ -54,6 +62,7 @@ const MyPage = () => {
         // 타임라인 데이터 테스트
         if (timeline && timeline.vocas && timeline.vocas[0]) {
             console.log(timeline.vocas[0].voca.length);
+            console.log(timeline.msg)
         }
         setShowPopup2(true);
     };
@@ -74,6 +83,7 @@ const MyPage = () => {
             const submitResult = await makeTimeline(token, message);
             if (submitResult) {
                 // setIsLoading(false);
+                setShouldFetchData(true);
             } else {
                 console.error('makeVoca fail');
             }
@@ -110,6 +120,7 @@ const MyPage = () => {
                     if (userInfoResult?.data) {
                         setUserInfo(userInfoResult.data);
                         saveUserToLocalStorage(userInfoResult.data);
+                        setShouldFetchData(true);
                     }
                 } else {
                     console.error('Profile update failed');
@@ -167,8 +178,8 @@ const MyPage = () => {
                     </div>
                 </div>
                 {/* Main Content */}
-                <div className='flex w-screen minh-screen justify-center self-stretch bg-light-green'>
-                    <div className='flex-1 flex-grow-4 h-screen self-start max-w-none prose-lg mx-4 text-gray-700'>
+                <div className='flex w-screen min-h-screen justify-center self-stretch bg-light-green'>
+                    <div className='flex-1 flex-grow-4s self-start max-w-none prose-lg mx-4 text-gray-700'>
                         <div className="flex flex-col h-screen items-center rounded-lg p-6">
 
 
