@@ -5,6 +5,8 @@ import { getMyTheme, makeVocas } from "../api/bbobavoca/bbobavocaAxios";
 import ThemeCard from "../components/ThemeCard";
 import { Dropdown } from "flowbite-react";
 import Loading from "../components/Loading";
+import { useRecoilState } from "recoil";
+import { savedUserState } from "../atom";
 
 
 
@@ -18,6 +20,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [themes, setThemes] = useState<VocaThemes>([]);
   const [containerWidth, setContainerWidth] = useState<number>(0);
+  const [userInfo, setUserInfo] = useRecoilState(savedUserState);
 
   const [vocaForm, setVocaForm] = useState<MakeVocaCard>({
     category: "",
@@ -38,7 +41,6 @@ const Home = () => {
         const cardResponse = await getMyTheme(token);
         if (cardResponse && cardResponse.data) {
           setThemes(cardResponse.data);
-          console.log(cardResponse.data);
         }
     }
   };
@@ -70,7 +72,24 @@ const Home = () => {
     if (loggedIn) {
       setShowHeroSection(false);
     }
-  }, [loggedIn, token]);
+  }, [token]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newTheme = {
+        category: vocaForm.category,
+        description: vocaForm.description,
+      };
+
+      if (themes.some(theme => theme.category === newTheme.category && theme.description === newTheme.description)) {
+        clearInterval(interval);
+      } else {
+        fetchCards();
+      }
+    }, 5000); // 5000ms = 5초
+
+    return () => clearInterval(interval);
+  }, [themes]);
 
   useEffect(() => {
     const updateContainerWidth = () => {
@@ -114,16 +133,12 @@ const Home = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(token) {
-      // setIsLoading(true);
       setShowPopup(false);
-      fetchCards();
-      const submitResult = await makeVocas(token, vocaForm.category, vocaForm.description, vocaForm.age, vocaForm.language);
-      if (submitResult) {
-        // setIsLoading(false);
+
+      const successRespose = await makeVocas(token, vocaForm.category, vocaForm.description, vocaForm.age, vocaForm.language);
+      if (successRespose) {
         fetchCards();
-      } else {
-        console.error('makeVoca fail');
-      } 
+      }
     }
   };
 
@@ -142,7 +157,7 @@ const Home = () => {
         {isLoading ? (
           <Loading />
         ) : (
-          <div className='flex w-screen h-screen justify-center self-stretch bg-light-green'>
+          <div className='flex w-screen min-h-screen justify-center self-stretch bg-light-green'>
             <div className='flex flex-1 flex-col md:flex-row box-border max-w-screen-xl items-center justify-start px-5 md:px-20 xl:px-10 pt-20 pb-20'>
                 <div className='flex-1 flex-grow-4 self-start max-w-none prose-lg mx-4 '>
                     <div id="content-container" className='mx-auto md:w-[80%]'>
@@ -158,13 +173,14 @@ const Home = () => {
                       {themes.length === 0 ? (
                           <div className="bg-gray-50 border border-gray-200 text-xs font-normal rounded-md mt-3 px-3 py-5 mx-3 text-center">단어 카드가 없습니다.</div>
                       ) : (
-                          <div className='grid grid-cols-1 md:grid-cols-4 gap-1 pt-5'>
+                          <div className='grid grid-cols-1 md:grid-cols-4 gap-1 pt-3'>
                               {themes.map((theme, index) => (
                                   <div key={index} className='flex flex-col w-full'>
                                       <ThemeCard
                                           category={theme.category}
                                           description={theme.description}
                                           color={theme.bgColor}
+                                          nickname={userInfo? userInfo.nickname : ""}
                                           onDelete={handleDeleteCard}
                                       />
                                   </div>

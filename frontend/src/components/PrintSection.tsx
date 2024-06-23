@@ -10,6 +10,7 @@ function PrintSection(props: {
     width: number;
     category: string;
     description: string;
+    nickname: string;
     onClose: () => void;
 }) {
     const popupRef = useRef<HTMLDivElement>(null);
@@ -24,7 +25,7 @@ function PrintSection(props: {
     const [printInfo, setPrintInfo] = useState<VocaPrint>({
         category: props.category,
         description: props.description,
-        nickname: userInfo? userInfo.nickname : "",
+        nickname: props.nickname,
         type: 0,
         template: 0
     });
@@ -35,21 +36,31 @@ function PrintSection(props: {
     ];
 
     const cardTemplates = [
-        { id: 0, src: "/img/template_0.png"},
-        { id: 1, src: "/img/template_test1.png"},
-        { id: 2, src: "/img/template_test2.png"},
-        { id: 3, src: "/img/template_0.png"},
-        { id: 4, src: "/img/template_test1.png"},
-        { id: 5, src: "/img/template_0.png"},
-        { id: 6, src: "/img/template_test2.png"}
+        { id: 0, src: "/img/card/template_0.png"},
+        { id: 1, src: "/img/card/template_1.png"},
+        { id: 2, src: "/img/card/template_2.png"},
+        { id: 3, src: "/img/card/template_3.png"},
+        { id: 4, src: "/img/card/template_4.png"},
+        { id: 5, src: "/img/card/template_5.png"},
+        { id: 6, src: "/img/card/template_6.png"},
+        { id: 7, src: "/img/card/template_7.png"},
+        { id: 8, src: "/img/card/template_8.png"},
+        { id: 9, src: "/img/card/template_9.png"},
+        { id: 10, src: "/img/card/template_10.png"}
     ]
 
     const posterTemplates = [
-        { id: 0, src: "/img/template_0.png"},
-        { id: 1, src: "/img/template_test1.png"},
-        { id: 2, src: "/img/template_0.png"},
-        { id: 3, src: "/img/template_test2.png"},
-        { id: 4, src: "/img/template_0.png"},
+        { id: 0, src: "/img/poster/template_p0.png"},
+        { id: 1, src: "/img/poster/template_p1.png"},
+        { id: 2, src: "/img/poster/template_p2.png"},
+        { id: 3, src: "/img/poster/template_p3.png"},
+        { id: 4, src: "/img/poster/template_p4.png"},
+        { id: 5, src: "/img/poster/template_p5.png"},
+        { id: 6, src: "/img/poster/template_p6.png"},
+        { id: 7, src: "/img/poster/template_p7.png"},
+        { id: 8, src: "/img/poster/template_p8.png"},
+        { id: 9, src: "/img/poster/template_p9.png"},
+        { id: 10, src: "/img/poster/template_p10.png"}
     ]
 
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number>(0);

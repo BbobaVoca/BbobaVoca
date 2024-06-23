@@ -10,3 +10,8 @@ export const vocaCardsInfoState = atom<VocaThemeCard | null>({
   key: "vocaCardsInfoState",
   default: null,
 });
+
+export const widthInfoState = atom<number | null>({
+  key: "widthInfoState",
+  default: null,
+})

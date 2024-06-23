@@ -34,7 +34,7 @@ const Login = () => {
 
   return (
     <>
-    <div className='bg-main w-screen h-screen'>
+    <div className='bg-main w-screen min-h-screen'>
       <section className="dark:bg-gray-900">
         <div className='flex justify-between pt-20 px-20'>
           <div className='text-white text-3xl leading-10 mt-20'>

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { ThemeCardProps } from '../interfaces/Interfaces';
 
 
-const ThemeCard: React.FC<ThemeCardProps> = ({ category, description, color, onDelete }) => {
+const ThemeCard: React.FC<ThemeCardProps> = ({ category, description, color, nickname, onDelete }) => {
     const token = localStorage.getItem('token');
     const navigate = useNavigate(); 
     const [openModal, setOpenModal] = useState(false);
@@ -21,12 +21,12 @@ const ThemeCard: React.FC<ThemeCardProps> = ({ category, description, color, onD
     };
 
     const handleCardClick = () => {
-        navigate(`/${category}/${description}`);
+        navigate(`/${category}/${description}/${nickname}`);
     };
     
     return (
         <>
-            <div className='flex flex-1 bg-white rounded-lg ml-1 mr-1 shadow-inner outline outline-1 outline-neutral-200 hover:outline-blue-500/50'>
+            <div className='flex flex-1 bg-white rounded-lg ml-1 mr-1 mb-2 shadow-inner outline outline-1 outline-neutral-200 hover:outline-blue-500/50'>
                 <figure className='relative w-full h-full flex flex-col cursor-pointer'>
                     <div className="relative">
                         <div className={`h-40 rounded-lg rounded-b-none object-cover w-full ${color}`}>
