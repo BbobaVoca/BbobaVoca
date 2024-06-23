@@ -27,16 +27,16 @@ const MyPage = () => {
             const response = await getTimeline(token);
             if (response && response.data) {
                 setTimeline(response.data);
-                 console.log(timeline);
+                console.log(timeline);
             }
         }
     };
 
     useEffect(() => {
         if (token) {
-          fetchData();
+            fetchData();
         }
-      }, [token]);
+    }, [token]);
 
     const handleLogoutButton = () => {
         localStorage.removeItem('token');
@@ -212,15 +212,18 @@ const MyPage = () => {
                                     alt="뽑아보카 이미지"
                                 />
                                 <div className='absolute top-5 left-0 right-0 bottom-0 flex flex-col items-center p-4 overflow-auto'>
-                                    <h1 className='text-3xl font-bold mt-9 mb-4 mt-4 text-white'>
-                                        {userInfo?.babies?.name || '아기'}의 순간들
-                                    </h1>
+                                {/* <div className="bg-white p-4 rounded-full shadow-lg mt-8 mb-4 text-center">
+    <h1 className='text-2xl font-bold text-black'>
+        {userInfo?.babies?.name || '아기'}의 순간들
+    </h1>
+</div> */}
+<span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-3xl font-uhbeezziba text-gray-600 ring-1 ring-inset ring-gray-500/10 mt-10">{userInfo?.babies?.name || '아기'}의 순간들</span>
 
                                     {/* 타임라인 메시지 렌더링 */}
                                     {/* {timeline && timeline.timelineMessages.length > 0 ? ( */}
 
 
-{/* 
+                                    {/* 
                                     {timeline != null ? ( 
                                         <div className='flex flex-col items-center mt-4'>
                                             {timeline.timelineMessages.map((message, index) => (
@@ -234,7 +237,7 @@ const MyPage = () => {
                                                     </div>
                                                     <div className='mt-2'>
                                                         {/* VocaData를 반복적으로 렌더링 */}
-                                                        {/* {Object.keys(message.vocas).map((key: string) => (
+                                    {/* {Object.keys(message.vocas).map((key: string) => (
                                                             <div key={key} className='flex items-center mb-2'>
                                                                 <span className='font-semibold mr-2'>{message.vocas[key as any].timestamp}</span>
                                                                 <ul className='list-disc ml-4'>
@@ -254,36 +257,49 @@ const MyPage = () => {
                                             <p className='text-xl font-semibold text-gray-800 mb-2'>아직 생성된 단어가 없습니다!</p>
                                             <p className='text-lg text-gray-600'>단어를 생성해주세요</p>
                                         </div>
-                                    )} */} 
+                                    )} */}
 
-{timeline != null ? ( 
-    <div className='flex flex-col items-center mt-4'>
-    
-                    {timeline.vocas.map((vocaData, vocaIndex) => (
-                        <div key={vocaIndex} className='flex items-center mb-2'>
-                            <span className='font-semibold mr-2'>{vocaData.timestamp}</span>
-                            <ul className='list-disc ml-4'>
-                                {vocaData.voca.map((word, wordIndex) => (
+                                    {timeline != null ? (
+                                        <div className='flex flex-col items-center mt-4'>
+
+                                            <img
+                                                className="w-40 h-40 object-cover rounded-full"
+                                                alt="profile"
+                                                src={timeline.babies.profile}
+                                            />
+                                            <span className="font-uhbeezziba items-center text-2xl mt-10">{timeline.msg}</span>
+
+
+                                            <div className="mt-10 items-center">
+                                                {/* <span className="font-uhbeezziba items-center text-2xl">{timeline.msg}</span> */}
+
+                                                {timeline.vocas.map((vocaData, vocaIndex) => (
+                                                    <div key={vocaIndex} className='flex items-center mb-2'>
+                                                        <span className='font-uhbeezziba font-semibold mr-2'>{vocaData.timestamp}</span>
+                                                        <span className="font-uhbeezziba">{vocaData.voca.join(', ')}</span>
+                                                        <ul className='list-disc ml-4'>
+                                                            {/* {vocaData.voca.map((word, wordIndex) => (
                                     <li key={`${vocaIndex}-${wordIndex}`}>{word}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
-            
-    </div>
-) : (
-    <div className='flex flex-col items-center justify-center bg-white bg-opacity-80 rounded-lg p-6 mt-40'>
-        <p className='text-xl font-semibold text-gray-800 mb-2'>아직 생성된 단어가 없습니다!</p>
-        <p className='text-lg text-gray-600'>단어를 생성해주세요</p>
-    </div>
-)}
+                                ))} */}
+                                                        </ul>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                        </div>
+                                    ) : (
+                                        <div className='flex flex-col items-center justify-center bg-white bg-opacity-80 rounded-lg p-6 mt-40'>
+                                            <p className='text-xl font-semibold text-gray-800 mb-2'>아직 생성된 단어가 없습니다!</p>
+                                            <p className='text-lg text-gray-600'>단어를 생성해주세요</p>
+                                        </div>
+                                    )}
 
 
 
 
 
 
-                                    
+
 
                                 </div>
                             </div>
