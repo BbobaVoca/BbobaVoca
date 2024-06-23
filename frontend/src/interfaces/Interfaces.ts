@@ -109,3 +109,14 @@ export interface ThemeAllCardProps {
     color: string;
     nickname: string;
 }
+
+export interface TimelineMessage {
+    babies: Baby;
+    msg: string;
+    vocas: VocaData[];
+}
+
+export interface VocaData {
+    timestamp: string;
+    voca: string[];
+}
