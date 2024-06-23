@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { MdPrint } from "react-icons/md";
 import { VocaPrint } from "../interfaces/Interfaces";
-import { useRecoilState } from "recoil";
-import { savedUserState } from "../atom";
 import { printVocas } from "../api/bbobavoca/bbobavocaAxios";
+import { Button, Modal } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 
 function PrintSection(props: {
@@ -20,7 +20,7 @@ function PrintSection(props: {
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [startX, setStartX] = useState<number>(0);
     const [scrollStart, setScrollStart] = useState<number>(0);
-    const [userInfo] = useRecoilState(savedUserState);
+    const [openModal, setOpenModal] = useState(false);
     
     const [printInfo, setPrintInfo] = useState<VocaPrint>({
         category: props.category,
@@ -102,8 +102,10 @@ function PrintSection(props: {
     };
 
     const handlePrint = async () => {
+        setOpenModal(true);
         if (token) {
             await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
+            props.onClose();
         }
     };
 
@@ -221,6 +223,27 @@ function PrintSection(props: {
                     </div>
                 </div>
             </div>
+
+            <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+                <div className='fixed top-20 left-0 w-full h-full bg-gray-500 bg-opacity-60'></div>
+                    <div className='flex items-center justify-center fixed inset-0 opacity-100'>
+                        <div className='z-10 bg-white rounded-lg border-solid  border-black-500 p-70 flex flex-col justify-center items-center'>
+                            <Modal.Body>
+                            <div className="text-center px-10">
+                                <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-black-200" />
+                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400 shadow-3xl">
+                                    곧 단어 카드가 출력됩니다! 프린터기를 확인해주세요!
+                                </h3>
+                                <div className="flex justify-center">
+                                    <Button className="bg-gray-100 text-black w-20 hover:bg-main hover:text-white" onClick={() => setOpenModal(false)}>
+                                        확인
+                                    </Button>
+                                </div>
+                            </div>
+                        </Modal.Body>
+                    </div>
+                </div>
+            </Modal>
         </>
     );
 }
