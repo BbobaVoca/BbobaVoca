@@ -18,14 +18,16 @@ const Register = () => {
     nicknameMessage: "",
     passwordMessage: "",
     checkedPasswordMessage: "",
+    nameMessage: "",
   });
-  
+
   // 유효성 검사
   const [isValid, setIsValid] = useState({
     email: false,
     nickname: false,
     password: false,
     checkedPassword: false,
+    name: true,
   });
 
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -36,7 +38,7 @@ const Register = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSignupForm({ ...signupForm, [name]: value });
-    
+
     if (name === "email") {
       setValidMessage((prev) => ({
         ...prev,
@@ -159,11 +161,11 @@ const Register = () => {
     fileInput.type = 'file';
     fileInput.accept = 'image/*';
     fileInput.onchange = async (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) {
-            setSelectedFile(file);
-            setPreviewSrc(URL.createObjectURL(file));
-        }
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        setSelectedFile(file);
+        setPreviewSrc(URL.createObjectURL(file));
+      }
     };
     fileInput.click();
   };
@@ -171,30 +173,53 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (isValid) {
-      const formData = new FormData();
-      
-      formData.append('email', signupForm.email);
-      formData.append('password', signupForm.password);
-      formData.append('nickname', signupForm.nickname);
-      formData.append('name', signupForm.name);
-      if (selectedFile) {
-        formData.append('profile', selectedFile);
-      }
+    if (signupForm.name=="이름") {
+      setValidMessage((prev) => ({
+        ...prev,
+        nameMessage: "아이 이름을 입력해주세요.",
+      }));
+      setIsValid((prev) => ({
+        ...prev,
+        name: false,
+      }));
+      return;
+    } else {
+      setValidMessage((prev) => ({
+        ...prev,
+        nameMessage: "",
+      }));
+      setIsValid((prev) => ({
+        ...prev,
+        name: true,
+      }));
 
-      console.log("test:", selectedFile?.name);
+      if (isValid) {
+        const formData = new FormData();
 
-      const registerResult = await register(formData);
+        formData.append('email', signupForm.email);
+        formData.append('password', signupForm.password);
+        formData.append('nickname', signupForm.nickname);
+        formData.append('name', signupForm.name);
+        if (selectedFile) {
+          formData.append('profile', selectedFile);
+        }
 
-      if (registerResult) {
-        navigate('/login');
+        console.log("test:", selectedFile?.name);
+
+        const registerResult = await register(formData);
+
+        if (registerResult) {
+          navigate('/login');
+        } else {
+          console.error('register fail');
+        }
       } else {
         console.error('register fail');
+        return;
       }
-    } else {
-      console.error('register fail');
-      return;
-    }    
+    }
+
+
   };
 
 
@@ -294,10 +319,10 @@ const Register = () => {
                       <div className='flex'>
                         <div className="rounded-full overflow-hidden w-24 mt-3 ml-4">
                           <img
-                              className="h-full w-full object-cover rounded-full"
-                              alt='profile'
-                              src={previewSrc}
-                              onClick={handleFileUpload}
+                            className="h-full w-full object-cover rounded-full"
+                            alt='profile'
+                            src={previewSrc}
+                            onClick={handleFileUpload}
                           />
                         </div>
                         <input
@@ -311,6 +336,9 @@ const Register = () => {
                           required
                         />
                       </div>
+                      <p className="text-red-500 sm:text-sm ml-2 mt-1">
+                        {validMessage.nameMessage}
+                      </p>
                     </div>
                     <br />
                     <div className="flex items-start">
