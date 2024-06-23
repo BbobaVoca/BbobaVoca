@@ -311,6 +311,8 @@ class UpdateBabyProfileAPIView(APIView):
 
         user = get_object_or_404(User, pk=user_id)
 
+        
+        print(request.data)
         # 요청 데이터에서 아기 이름 및 파일 추출
         baby_name = request.data.get('name')
         if not baby_name:
@@ -319,10 +321,12 @@ class UpdateBabyProfileAPIView(APIView):
         try:
             baby = user.babies.get(name=baby_name)
         except Baby.DoesNotExist:
+            print("no baby")
             return Response({"error": "Baby not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        file = request.FILES.get('file')
+        file = request.FILES.get('profile')
         if not file:
+            print("no file")
             return Response({"error": "File is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         # S3에 업로드할 파일 경로 설정
@@ -335,8 +339,10 @@ class UpdateBabyProfileAPIView(APIView):
 
         # 프로필 URL 업데이트
         baby.profile = s3_url
+        print(s3_url)
         baby.save()
 
         # 응답 데이터 구성
         serializer = BabyUpdateSerializer(baby)
+        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)

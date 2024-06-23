@@ -19,6 +19,8 @@ urlpatterns = [
     path('check-nickname', CheckNicknameAPIView.as_view(), name='check-nickname'),
     path('list', UserListView.as_view(), name='user-list'),
     path('logout', LogoutView.as_view(), name='logout'),
+    path('profile-update', UpdateBabyProfileAPIView.as_view(), name='profile-update'),
+    
     path("", include(router.urls)),
     
 ]

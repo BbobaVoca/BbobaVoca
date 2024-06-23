@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Category, Card
+from .models import Category, Card, Message
 
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = ['src', 'kor', 'other', 'example']
+        fields = ['src', 'kor', 'other', 'example', 'timestamp']
 
 class CategorySerializer(serializers.ModelSerializer):
     cards = CardSerializer(many=True, required=False)
@@ -22,3 +22,8 @@ class CategorySerializer(serializers.ModelSerializer):
             Card.objects.create(category=category, **card_data)
         return category
 
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['msg', 'timestamp']

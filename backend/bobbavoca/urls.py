@@ -11,4 +11,6 @@ urlpatterns = [
     path('remove', CategoryDeleteView.as_view(), name='delete-cards'),
     path('allvoca', AllCategoriesView.as_view(), name='all-categories'),
     path('print', CreateTemplateView.as_view(), name='create-template'),
+    path('make-timeline', CreateTimelineView.as_view(), name='create-message'),
+    path('timeline', UserTimelineView.as_view(), name='user-timeline'),
 ]
