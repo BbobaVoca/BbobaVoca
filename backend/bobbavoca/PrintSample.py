@@ -8,6 +8,12 @@ import base64
 import json
 from pprint import pprint
 
+
+import sys
+sys.path.append("/home/honglee0317/BobbaVoca/backend/bobbavoca")
+
+from config.my_settings import *
+
 def epson_print(local_file_path = '/home/honglee0317/BobbaVoca/backend/SampleDoc.pdf'):
 
 
@@ -19,8 +25,8 @@ def epson_print(local_file_path = '/home/honglee0317/BobbaVoca/backend/SampleDoc
 
     AUTH_URI = 'https://' + HOST + '/api/1/printing/oauth2/auth/token?subject=printer'
     CLIENT_ID = '0f5a1385176540fd82b6eb9ed0bdba57'
-    SECRET = 'KeNBITillt428qSf3aL1sa3FCVOc5XKMgiZdrjMU2qsT8U1FatuS4TqBgk8sMUrb'
-    DEVICE = 'nnm5496520yt78@print.epsonconnect.com'
+    SECRET = epson_key
+    DEVICE = epson_addr
 
     auth = base64.b64encode((CLIENT_ID + ':' + SECRET).encode()).decode()
 
