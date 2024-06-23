@@ -9,7 +9,7 @@ const Register = () => {
     nickname: "",
     password: "",
     checkedPassword: "",
-    name: "이름"
+    name: ""
   });
 
   // 오류 메세지
@@ -18,14 +18,16 @@ const Register = () => {
     nicknameMessage: "",
     passwordMessage: "",
     checkedPasswordMessage: "",
+    nameMessage: "",
   });
-  
+
   // 유효성 검사
   const [isValid, setIsValid] = useState({
     email: false,
     nickname: false,
     password: false,
     checkedPassword: false,
+    name: true,
   });
 
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -36,7 +38,7 @@ const Register = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSignupForm({ ...signupForm, [name]: value });
-    
+
     if (name === "email") {
       setValidMessage((prev) => ({
         ...prev,
@@ -159,11 +161,11 @@ const Register = () => {
     fileInput.type = 'file';
     fileInput.accept = 'image/*';
     fileInput.onchange = async (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (file) {
-            setSelectedFile(file);
-            setPreviewSrc(URL.createObjectURL(file));
-        }
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        setSelectedFile(file);
+        setPreviewSrc(URL.createObjectURL(file));
+      }
     };
     fileInput.click();
   };
@@ -171,30 +173,54 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (isValid) {
-      const formData = new FormData();
-      
-      formData.append('email', signupForm.email);
-      formData.append('password', signupForm.password);
-      formData.append('nickname', signupForm.nickname);
-      formData.append('name', signupForm.name);
-      if (selectedFile) {
-        formData.append('profile', selectedFile);
-      }
+    if (signupForm.name == "") {
+      setValidMessage((prev) => ({
+        ...prev,
+        nameMessage: "아이 이름을 입력해주세요.",
+      }));
+      console.log("이름을 입력하지 않았습니다")
+      setIsValid((prev) => ({
+        ...prev,
+        name: false,
+      }));
+      return;
+    } else {
+      setValidMessage((prev) => ({
+        ...prev,
+        nameMessage: "",
+      }));
+      setIsValid((prev) => ({
+        ...prev,
+        name: true,
+      }));
 
-      console.log("test:", selectedFile?.name);
+      if (isValid) {
+        const formData = new FormData();
 
-      const registerResult = await register(formData);
+        formData.append('email', signupForm.email);
+        formData.append('password', signupForm.password);
+        formData.append('nickname', signupForm.nickname);
+        formData.append('name', signupForm.name);
+        if (selectedFile) {
+          formData.append('profile', selectedFile);
+        }
 
-      if (registerResult) {
-        navigate('/login');
+        console.log("test:", selectedFile?.name);
+
+        const registerResult = await register(formData);
+
+        if (registerResult) {
+          navigate('/login');
+        } else {
+          console.error('register fail');
+        }
       } else {
         console.error('register fail');
+        return;
       }
-    } else {
-      console.error('register fail');
-      return;
-    }    
+    }
+
+
   };
 
 
@@ -294,23 +320,50 @@ const Register = () => {
                       <div className='flex'>
                         <div className="rounded-full overflow-hidden w-24 mt-3 ml-4">
                           <img
-                              className="h-full w-full object-cover rounded-full"
-                              alt='profile'
-                              src={previewSrc}
-                              onClick={handleFileUpload}
+                            className="h-full w-full object-cover rounded-full"
+                            alt='profile'
+                            src={previewSrc}
+                            onClick={handleFileUpload}
                           />
                         </div>
-                        <input
-                          type="text"
-                          name="name"
-                          id="name"
-                          value={signupForm.name}
-                          onChange={handleChange}
-                          maxLength={10}
-                          className={`text-gray-800 sm:text-sm ml-3 w-32 p-4`}
-                          required
-                        />
+
+                        <div className='relative'>
+                          <p className='mb-1 ml-1 text-sm ml-10 mt-5 mb-2'>아이 이름</p>
+                          <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            value={signupForm.name}
+                            onChange={handleChange}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-1/2 h-10 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ml-10"
+                            placeholder=""
+                            required
+                          />
+                          {/* <button
+                        className="absolute right-3 top-10 w-15 bg-main text-white text-xs font-PretendardVariable font-normal rounded-md py-1 px-2 transition duration-200 ease-in-out cursor-pointer"
+                        onClick={handleCheckEmail}>중복확인
+                      </button> */}
+                          <p className={`text-gray-500 sm:text-sm ml-1 mt-1`}>
+                            {validMessage.nameMessage}
+
+                          </p>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       </div>
+
                     </div>
                     <br />
                     <div className="flex items-start">
