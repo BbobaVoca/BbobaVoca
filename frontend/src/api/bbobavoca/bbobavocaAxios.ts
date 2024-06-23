@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { VocaTheme, VocaThemeCard, SuccessResponse, AllVocaTheme, AllVocaThemeCard, VocaPrint, AllVocaThemes, VocaThemes } from "../../interfaces/Interfaces";
+import { VocaTheme, VocaThemeCard, SuccessResponse, AllVocaThemeCard, AllVocaThemes, VocaThemes, TimelineMessage } from "../../interfaces/Interfaces";
 import { bobbaVocaAxios } from "../axios";
 
 
@@ -14,7 +14,7 @@ export const makeVocas = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/make",
         { category, description, age, language },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -25,7 +25,7 @@ export const getMyTheme = async (
 ): Promise<AxiosResponse<VocaThemes> | null> => {
     const response = await bobbaVocaAxios.get(
         "bbobavoca/myvoca",
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -39,7 +39,7 @@ export const getMyVocaCards = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/select-myvoca",
         { category, description },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -53,7 +53,7 @@ export const removeVocaTheme = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/remove",
         { category, description },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -77,7 +77,7 @@ export const getSelectVocas = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/select-voca",
         { category, description, nickname },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
     return response;
 };
@@ -94,7 +94,72 @@ export const printVocas = async (
     const response = await bobbaVocaAxios.post(
         "bbobavoca/print",
         { category, description, nickname, type, template },
-        { headers: { Authorization: `Bearer ${token}` }}
+        { headers: { Authorization: `Bearer ${token}` } }
     );
+    return response;
+};
+
+
+export const makeTimeline = async (
+    token: string,
+    msg: string
+): Promise<AxiosResponse<SuccessResponse> | null> => {
+    const response = await bobbaVocaAxios.post(
+        "bbobavoca/make-timeline",
+        { msg },
+        { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response;
+};
+
+// 타임라인 데이터 가져오기
+export const getTimeline = async (
+    token: string
+): Promise<AxiosResponse<TimelineMessage>> => {
+    const response = await bobbaVocaAxios.get(
+        "bbobavoca/timeline",
+        {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    return response;
+};
+
+
+// export const updateProfile = async (
+//     token: string,
+//     //babies:string,
+//     file: File,
+
+// ): Promise<AxiosResponse<SuccessResponse> | null> => {
+//     const formData = new FormData();
+//     //formData.append('name',babies ); // 'babyName'는 서버에서 정의한 필드명
+//     formData.append('profile', file); // 'profile'는 서버에서 정의한 파일 필드명
+
+//     const response = await bobbaVocaAxios.post(
+//         "members/profile-update",
+//         formData,
+//         {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//                 'Content-Type': 'multipart/form-data'
+//             }
+//         }
+//     );
+//     return response;
+// };
+
+// 프로필 올리기
+export const updateProfile = async (
+    token: string,
+    formData: FormData
+): Promise<AxiosResponse<SuccessResponse> | null> => {
+    const response = await bobbaVocaAxios.post(
+        "members/profile-update",
+        formData, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response;
 };
