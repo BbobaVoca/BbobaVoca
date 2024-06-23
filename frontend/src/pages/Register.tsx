@@ -173,7 +173,7 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (signupForm.name=="") {
+    if (signupForm.name == "") {
       setValidMessage((prev) => ({
         ...prev,
         nameMessage: "아이 이름을 입력해주세요.",
@@ -326,28 +326,28 @@ const Register = () => {
                             onClick={handleFileUpload}
                           />
                         </div>
-                        
+
                         <div className='relative'>
-                      <p className='mb-1 ml-1 text-sm ml-10 mt-5 mb-2'>아이 이름</p>
-                      <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        value={signupForm.name}
-                        onChange={handleChange}
-                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-1/2 h-10 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ml-10"
-                        placeholder=""
-                        required
-                      />
-                      {/* <button
+                          <p className='mb-1 ml-1 text-sm ml-10 mt-5 mb-2'>아이 이름</p>
+                          <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            value={signupForm.name}
+                            onChange={handleChange}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-1/2 h-10 p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ml-10"
+                            placeholder=""
+                            required
+                          />
+                          {/* <button
                         className="absolute right-3 top-10 w-15 bg-main text-white text-xs font-PretendardVariable font-normal rounded-md py-1 px-2 transition duration-200 ease-in-out cursor-pointer"
                         onClick={handleCheckEmail}>중복확인
                       </button> */}
-                      <p className={`text-gray-500 sm:text-sm ml-1 mt-1`}>
-                        {validMessage.nameMessage}
-                        
-                      </p>
-                    </div>
+                          <p className={`text-gray-500 sm:text-sm ml-1 mt-1`}>
+                            {validMessage.nameMessage}
+
+                          </p>
+                        </div>
 
 
 
@@ -361,20 +361,9 @@ const Register = () => {
 
 
 
-                        {/* <input
-                          type="text"
-                          name="name"
-                          id="name"
-                          value={signupForm.name}
-                          onChange={handleChange}
-                          maxLength={10}
-                          className={`text-gray-800 sm:text-sm ml-3 w-32 p-4`}
-                          required
-                        /> */}
+
                       </div>
-                      {/* <p className="text-red-500 sm:text-sm ml-2 mt-1">
-                        {validMessage.nameMessage}
-                      </p> */}
+
                     </div>
                     <br />
                     <div className="flex items-start">
