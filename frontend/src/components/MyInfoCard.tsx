@@ -15,6 +15,7 @@ function MyInfoCard(props: {
         removeUserFromLocalStorage();
         setUserInfo(null);
         props.onLogout();
+        navigate('/');
     };
 
     const handleMyPageButton = () => {

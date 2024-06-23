@@ -39,7 +39,7 @@ function VocaCard(props: {
             alt="speaker"
         />
     </div>
-    <p className='text-center pb-10 font-ownglyph text-3xl'>
+    <p className='text-start ml-7 pb-10 font-ownglyph text-3xl'>
         {props.example}
     </p>
 </div>

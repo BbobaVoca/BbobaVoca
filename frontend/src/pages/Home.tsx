@@ -70,7 +70,7 @@ const Home = () => {
     }
 
     if (loggedIn) {
-      setShowHeroSection(false);
+      setShowHeroSection(true);
     }
   }, [token]);
 
