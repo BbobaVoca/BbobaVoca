@@ -64,31 +64,31 @@ const Home = () => {
   useEffect(() => {
     if (token) {
       setLoggedIn(true);
+      setShowHeroSection(false);
       fetchCards();
     } else {
       setLoggedIn(false);
-    }
-
-    if (loggedIn) {
       setShowHeroSection(true);
     }
   }, [token]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newTheme = {
-        category: vocaForm.category,
-        description: vocaForm.description,
-      };
-
-      if (themes.some(theme => theme.category === newTheme.category && theme.description === newTheme.description)) {
-        clearInterval(interval);
-      } else {
-        fetchCards();
-      }
-    }, 5000); // 5000ms = 5초
-
-    return () => clearInterval(interval);
+    if (token) {
+      const interval = setInterval(() => {
+        const newTheme = {
+          category: vocaForm.category,
+          description: vocaForm.description,
+        };
+  
+        if (themes.some(theme => theme.category === newTheme.category && theme.description === newTheme.description)) {
+          clearInterval(interval);
+        } else {
+          fetchCards();
+        }
+      }, 5000); // 5000ms = 5초
+  
+      return () => clearInterval(interval);
+    }
   }, [themes]);
 
   useEffect(() => {
