@@ -16,9 +16,9 @@
 ![008](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/b713899d-8fa8-42ed-a9c6-c260605dfbb6)
 ![009](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/cf8fb1f6-e276-4cc3-aae7-c1ce8d18ed19)
 ![010](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/b87ce0af-387c-49ad-ad1a-cf4a5aa1a89d)
-![011](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/1deb08ed-b4c3-4488-a0f3-42c47b6c5d0d)
-![012](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/0d60a7bc-c986-4fac-a030-f01774f2c1f8)
-![013](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/4f7d829a-4148-41fd-9972-cf75bf6e2417)
+![011](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/b0cf072a-13d0-476f-ad79-cb0918f627cb)
+![012](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/c3d95283-9722-4dcf-a45d-b12dcaf02177)
+![013](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/82b529a0-d6eb-473b-bf85-c6ec563e6453)
 ![014](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/b9e2343d-ed80-4436-8c74-e99f9b3f8e33)
 ![015](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/bf5511fe-ebe5-4130-a351-645b84dc3bdc)
 ![016](https://github.com/BbobaVoca/BbobaVoca/assets/80433455/117e1c9d-0e32-4de8-ac47-adf118834a39)
@@ -41,3 +41,4 @@
 <br><br><br>
 
 ## 💡 시연 영상
+[![Video Lable](http://img.youtube.com/vi/ocv2ufUY2UU/0.jpg)](https://youtu.be/ocv2ufUY2UU?si=xyt1AmpebVE5N7mg)
