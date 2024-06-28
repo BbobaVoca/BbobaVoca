@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MdPrint } from "react-icons/md";
 import { VocaPrint } from "../interfaces/Interfaces";
-import { printVocas } from "../api/bbobavoca/bbobavocaAxios";
+import { printVocas, getPrinterId, sendPrinterId } from "../api/bbobavoca/bbobavocaAxios";
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
@@ -21,7 +21,10 @@ function PrintSection(props: {
     const [startX, setStartX] = useState<number>(0);
     const [scrollStart, setScrollStart] = useState<number>(0);
     const [openModal, setOpenModal] = useState(false);
-    
+    const [isPrinterPopupVisible, setIsPrinterPopupVisible] = useState(false);
+    const [printerInput, setPrinterInput] = useState('');
+
+
     const [printInfo, setPrintInfo] = useState<VocaPrint>({
         category: props.category,
         description: props.description,
@@ -36,31 +39,31 @@ function PrintSection(props: {
     ];
 
     const cardTemplates = [
-        { id: 0, src: "/img/card/template_0.png"},
-        { id: 1, src: "/img/card/template_1.png"},
-        { id: 2, src: "/img/card/template_2.png"},
-        { id: 3, src: "/img/card/template_3.png"},
-        { id: 4, src: "/img/card/template_4.png"},
-        { id: 5, src: "/img/card/template_5.png"},
-        { id: 6, src: "/img/card/template_6.png"},
-        { id: 7, src: "/img/card/template_7.png"},
-        { id: 8, src: "/img/card/template_8.png"},
-        { id: 9, src: "/img/card/template_9.png"},
-        { id: 10, src: "/img/card/template_10.png"}
+        { id: 0, src: "/img/card/template_0.png" },
+        { id: 1, src: "/img/card/template_1.png" },
+        { id: 2, src: "/img/card/template_2.png" },
+        { id: 3, src: "/img/card/template_3.png" },
+        { id: 4, src: "/img/card/template_4.png" },
+        { id: 5, src: "/img/card/template_5.png" },
+        { id: 6, src: "/img/card/template_6.png" },
+        { id: 7, src: "/img/card/template_7.png" },
+        { id: 8, src: "/img/card/template_8.png" },
+        { id: 9, src: "/img/card/template_9.png" },
+        { id: 10, src: "/img/card/template_10.png" }
     ]
 
     const posterTemplates = [
-        { id: 0, src: "/img/poster/template_p0.png"},
-        { id: 1, src: "/img/poster/template_p1.png"},
-        { id: 2, src: "/img/poster/template_p2.png"},
-        { id: 3, src: "/img/poster/template_p3.png"},
-        { id: 4, src: "/img/poster/template_p4.png"},
-        { id: 5, src: "/img/poster/template_p5.png"},
-        { id: 6, src: "/img/poster/template_p6.png"},
-        { id: 7, src: "/img/poster/template_p7.png"},
-        { id: 8, src: "/img/poster/template_p8.png"},
-        { id: 9, src: "/img/poster/template_p9.png"},
-        { id: 10, src: "/img/poster/template_p10.png"}
+        { id: 0, src: "/img/poster/template_p0.png" },
+        { id: 1, src: "/img/poster/template_p1.png" },
+        { id: 2, src: "/img/poster/template_p2.png" },
+        { id: 3, src: "/img/poster/template_p3.png" },
+        { id: 4, src: "/img/poster/template_p4.png" },
+        { id: 5, src: "/img/poster/template_p5.png" },
+        { id: 6, src: "/img/poster/template_p6.png" },
+        { id: 7, src: "/img/poster/template_p7.png" },
+        { id: 8, src: "/img/poster/template_p8.png" },
+        { id: 9, src: "/img/poster/template_p9.png" },
+        { id: 10, src: "/img/poster/template_p10.png" }
     ]
 
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number>(0);
@@ -73,7 +76,7 @@ function PrintSection(props: {
             template: 0
         }));
 
-        setSelectedTemplateIndex(0);  
+        setSelectedTemplateIndex(0);
         setTemplateList(type === 0 ? cardTemplates : posterTemplates);
     };
 
@@ -89,7 +92,7 @@ function PrintSection(props: {
             setPrintInfo(prevForm => ({
                 ...prevForm,
                 template: (printInfo.template + 1) % templateList.length
-            }));0
+            })); 0
         }
     };
 
@@ -101,13 +104,54 @@ function PrintSection(props: {
         }));
     };
 
+    // const handlePrint = async () => {
+    //     setOpenModal(true);
+    //     if (token) {
+    //         await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
+    //         props.onClose();
+    //     }
+    // };
+
     const handlePrint = async () => {
-        setOpenModal(true);
         if (token) {
-            await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
-            props.onClose();
+            try {
+                const response = await getPrinterId(token);
+                console.log(response.data);
+                if (!response.data || response.data.printId === null) {
+                    console.log("팝업창 띄우기 시작");
+                    setIsPrinterPopupVisible(true);
+                } else {
+                    console.log("이미 주소 존재해서 프린트 요청 보냄");
+                    setOpenModal(true);
+                    await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
+                    props.onClose();
+                }
+            } catch (error) {
+                console.error('Failed to get Printer ID:', error);
+                setIsPrinterPopupVisible(true); // 에러 발생 시에도 팝업창을 표시
+            }
         }
     };
+    
+    const handlePrinterSubmit = async () => {
+        if (token) {
+            try {
+                console.log(printerInput);
+                await sendPrinterId(token, printerInput);
+                console.log(printerInput);
+                setIsPrinterPopupVisible(false);
+                setPrinterInput('');
+                
+                // 프린터 ID 입력 후 printVocas 호출
+                setOpenModal(true);
+                await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
+                props.onClose();
+            } catch (error) {
+                console.error('Failed to send Printer ID:', error);
+            }
+        }
+    };
+    
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
@@ -122,6 +166,15 @@ function PrintSection(props: {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, [props.onClose]);
+
+
+
+
+    const handlePrinterCancel = () => {
+        setIsPrinterPopupVisible(false);
+        setPrinterInput('');
+    };
+
 
     const handleMouseDown = (event: MouseEvent) => {
         setIsDragging(true);
@@ -162,7 +215,7 @@ function PrintSection(props: {
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-60 flex items-center justify-center">
                 <div ref={popupRef} className="mx-auto h-3/7 bg-white rounded-lg border fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center justify-center mt-4 z-50" style={{ width: props.width }}>
-                    <div className='m-4'>       
+                    <div className='m-4'>
                         <div className="flex justify-between mx-3 mb-3 mt-10">
                             <button
                                 className="text-gray-600 py-1 px-3 ml-20"
@@ -189,9 +242,8 @@ function PrintSection(props: {
                             {templateOptions.map(option => (
                                 <button
                                     key={option.id}
-                                    className={`text-m font-normal rounded-xl py-2 px-6 mt-4 shadow-inner transition duration-200 ease-in-out cursor-pointer mr-3 ${
-                                        printInfo.type === option.id ? 'bg-main text-white' : 'bg-unselect-gray text-select-gray'
-                                    }`}
+                                    className={`text-m font-normal rounded-xl py-2 px-6 mt-4 shadow-inner transition duration-200 ease-in-out cursor-pointer mr-3 ${printInfo.type === option.id ? 'bg-main text-white' : 'bg-unselect-gray text-select-gray'
+                                        }`}
                                     onClick={() => handleTemplateSelect(option.id)}
                                 >
                                     {option.label}
@@ -204,7 +256,7 @@ function PrintSection(props: {
                                     {templateList.map((template, index) => (
                                         <img
                                             key={index}
-                                            className={`inline-block w-36 mr-3 ${index===selectedTemplateIndex && 'border border-2 border-blue-500'}`}
+                                            className={`inline-block w-36 mr-3 ${index === selectedTemplateIndex && 'border border-2 border-blue-500'}`}
                                             src={template.src}
                                             alt={`Template ${index}`}
                                             onClick={() => handleTempleateClick(index)}
@@ -226,9 +278,9 @@ function PrintSection(props: {
 
             <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
                 <div className='fixed top-20 left-0 w-full h-full bg-gray-500 bg-opacity-60'></div>
-                    <div className='flex items-center justify-center fixed inset-0 opacity-100'>
-                        <div className='z-10 bg-white rounded-lg border-solid  border-black-500 p-70 flex flex-col justify-center items-center'>
-                            <Modal.Body>
+                <div className='flex items-center justify-center fixed inset-0 opacity-100'>
+                    <div className='z-10 bg-white rounded-lg border-solid border-black-500 p-70 flex flex-col justify-center items-center'>
+                        <Modal.Body>
                             <div className="text-center px-10">
                                 <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-black-200" />
                                 <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400 shadow-3xl">
@@ -244,6 +296,36 @@ function PrintSection(props: {
                     </div>
                 </div>
             </Modal>
+
+            {isPrinterPopupVisible && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-20">
+                    <div className="bg-white rounded-lg p-5 shadow-lg">
+                        <h2 className="text-xl font-semibold mb-4">연결된 프린터기가 없습니다<br></br>프린터기 ID를 입력해주세요!</h2>
+                        <input
+                            type="email"
+                            className="border rounded-md p-2 w-full mb-4"
+                            value={printerInput}
+                            onChange={(e) => setPrinterInput(e.target.value)}
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                className="bg-gray-300 text-gray-800 rounded-md py-2 px-4 mr-2"
+                                onClick={handlePrinterCancel}
+                            >
+                                취소
+                            </button>
+                            <button
+                                className="bg-main text-white rounded-md py-2 px-4"
+                                onClick={handlePrinterSubmit}
+                            >
+                                확인
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
         </>
     );
 }

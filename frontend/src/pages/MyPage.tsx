@@ -64,6 +64,7 @@ const MyPage = () => {
         if (timeline && timeline.vocas && timeline.vocas[0]) {
             console.log(timeline.vocas[0].voca.length);
             console.log(timeline.msg)
+            console.log(timeline.vocas)
         }
         setShowPopup2(true);
     };
