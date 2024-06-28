@@ -159,7 +159,7 @@ const MyPage = () => {
                                         src={userInfo?.babies.profile}
                                     />
                                 </div>
-                                <h2 className="text-2xl font-semibold mt-6">{userInfo?.babies.name}</h2>
+                                <h2 className="text-2xl font-semibold mt-6">{userInfo?.nickname}</h2>
                                 <button type="submit"
                                     onClick={handlePopUpButtonClick2}
                                     className="mt-20 px-4 py-2 bg-gray-50 text-black rounded border border-gray-50">프로필 수정</button>
