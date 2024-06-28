@@ -353,7 +353,7 @@ function PrintSection(props: {
             {showEditConfirm && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50" ref={fixprinterPopupRef}>
                     <div className="bg-white rounded-lg p-5 shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4">현재 프린터 ID: {currentPrinterId}</h2>
+                        <h2 className="text-xl font-semibold mb-4">현재 프린터 ID: <br></br><br></br>{currentPrinterId}</h2><br></br>
                         <p>프린터 ID를 수정하시겠습니까?</p>
                         <div className="flex justify-end mt-4">
                             <button
