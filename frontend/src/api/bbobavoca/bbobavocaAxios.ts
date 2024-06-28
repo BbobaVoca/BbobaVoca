@@ -170,7 +170,7 @@ export const sendPrinterId = async (
     printId: string
 ): Promise<AxiosResponse<{ message: string }>> => {
     const response = await bobbaVocaAxios.post(
-        "bbobavoca/print",
+        "bbobavoca/print-id",
         { printId }, // Include the printId in the request body
         {
             headers: { Authorization: `Bearer ${token}` }

@@ -87,7 +87,7 @@ function MyInfoCard(props: {
                     <div className='w-full border-t mt-8 cursor-pointer' onClick={handleMyPageButton}>
                         <p className='font-semibold text-gray-700 pt-5 pl-5'>아이 단어 성장일지</p>
                     </div>
-                    <div className='w-full border-t mt-8 cursor-pointer' onClick={handlePrinterButton}>
+                    <div className='w-full border-t mt-5 cursor-pointer' onClick={handlePrinterButton}>
                         <p className='font-semibold text-gray-700 pt-5 pl-5'>프린터기 연결</p>
                     </div>
                     <div className='w-full border-t mt-5 cursor-pointer' onClick={handleLogoutButton}>

@@ -14,6 +14,7 @@ function PrintSection(props: {
     onClose: () => void;
 }) {
     const popupRef = useRef<HTMLDivElement>(null);
+    const printerPopupRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const token = localStorage.getItem('token');
 
@@ -117,7 +118,7 @@ function PrintSection(props: {
             try {
                 const response = await getPrinterId(token);
                 console.log(response.data);
-                if (!response.data || response.data.printId === null) {
+                if (!response.data || response.data.printId === ""||response.data.printId.length <0) {
                     console.log("팝업창 띄우기 시작");
                     setIsPrinterPopupVisible(true);
                 } else {
@@ -136,7 +137,6 @@ function PrintSection(props: {
     const handlePrinterSubmit = async () => {
         if (token) {
             try {
-                console.log(printerInput);
                 await sendPrinterId(token, printerInput);
                 console.log(printerInput);
                 setIsPrinterPopupVisible(false);
@@ -156,16 +156,19 @@ function PrintSection(props: {
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-                props.onClose();
+                if (!printerPopupRef.current || (printerPopupRef.current && !printerPopupRef.current.contains(event.target as Node))) {
+                    props.onClose();
+                }
             }
         };
-
+    
         document.addEventListener('mousedown', handleOutsideClick);
-
+    
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, [props.onClose]);
+    
 
 
 
@@ -214,7 +217,7 @@ function PrintSection(props: {
     return (
         <>
             <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-60 flex items-center justify-center">
-                <div ref={popupRef} className="mx-auto h-3/7 bg-white rounded-lg border fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center justify-center mt-4 z-50" style={{ width: props.width }}>
+                <div ref={popupRef} className="mx-auto h-3/7 bg-white rounded-lg border fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center justify-center mt-4 z-30" style={{ width: props.width }}>
                     <div className='m-4'>
                         <div className="flex justify-between mx-3 mb-3 mt-10">
                             <button
@@ -298,7 +301,7 @@ function PrintSection(props: {
             </Modal>
 
             {isPrinterPopupVisible && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-20">
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50" ref={printerPopupRef}>
                     <div className="bg-white rounded-lg p-5 shadow-lg">
                         <h2 className="text-xl font-semibold mb-4">연결된 프린터기가 없습니다<br></br>프린터기 ID를 입력해주세요!</h2>
                         <input
@@ -324,8 +327,6 @@ function PrintSection(props: {
                     </div>
                 </div>
             )}
-
-
         </>
     );
 }
