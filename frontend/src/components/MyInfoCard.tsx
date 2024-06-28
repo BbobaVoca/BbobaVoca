@@ -2,12 +2,16 @@ import { useRecoilState } from 'recoil';
 import { savedUserState } from '../atom';
 import { removeUserFromLocalStorage } from '../utils/localStorage';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { sendPrinterId } from '../api/bbobavoca/bbobavocaAxios';
 
 function MyInfoCard(props: {
     onLogout: () => void;
     onClose: () => void;
 }) {
     const [userInfo, setUserInfo] = useRecoilState(savedUserState);
+    const [isPrinterPopupVisible, setIsPrinterPopupVisible] = useState(false);
+    const [printerInput, setPrinterInput] = useState('');
     const navigate = useNavigate();
 
     const handleLogoutButton = () => {
@@ -22,6 +26,29 @@ function MyInfoCard(props: {
         navigate("/mypage");
         props.onClose();
     }
+
+    // 프린터 연결
+    const handlePrinterButton = () => {
+        setIsPrinterPopupVisible(true);
+    };
+    const handlePrinterSubmit = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                await sendPrinterId(token, printerInput);
+                console.log('Printer ID sent successfully');
+            } catch (error) {
+                console.error('Failed to send Printer ID:', error);
+            }
+        }
+        setIsPrinterPopupVisible(false);
+        setPrinterInput('');
+    };
+
+    const handlePrinterCancel = () => {
+        setIsPrinterPopupVisible(false);
+        setPrinterInput('');
+    };
 
 
     return (
@@ -60,11 +87,41 @@ function MyInfoCard(props: {
                     <div className='w-full border-t mt-8 cursor-pointer' onClick={handleMyPageButton}>
                         <p className='font-semibold text-gray-700 pt-5 pl-5'>아이 단어 성장일지</p>
                     </div>
+                    <div className='w-full border-t mt-5 cursor-pointer' onClick={handlePrinterButton}>
+                        <p className='font-semibold text-gray-700 pt-5 pl-5'>프린터기 연결</p>
+                    </div>
                     <div className='w-full border-t mt-5 cursor-pointer' onClick={handleLogoutButton}>
                         <p className='font-semibold text-gray-700 pt-5 pl-5'>로그아웃</p>
                     </div>
                 </div>
             </figure>
+            {isPrinterPopupVisible && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-20">
+                    <div className="bg-white rounded-lg p-5 shadow-lg">
+                        <h2 className="text-xl font-semibold mb-4">프린터기 연결</h2>
+                        <input
+                            type="email"
+                            className="border rounded-md p-2 w-full mb-4"
+                            value={printerInput}
+                            onChange={(e) => setPrinterInput(e.target.value)}
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                className="bg-gray-300 text-gray-800 rounded-md py-2 px-4 mr-2"
+                                onClick={handlePrinterCancel}
+                            >
+                                취소
+                            </button>
+                            <button
+                                className="bg-main text-white rounded-md py-2 px-4"
+                                onClick={handlePrinterSubmit}
+                            >
+                                확인
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

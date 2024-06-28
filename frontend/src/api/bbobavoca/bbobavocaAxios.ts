@@ -163,3 +163,30 @@ export const updateProfile = async (
     });
     return response;
 };
+
+// 프린터 아이디 전송하기
+export const sendPrinterId = async (
+    token: string,
+    printId: string
+): Promise<AxiosResponse<{ message: string }>> => {
+    const response = await bobbaVocaAxios.post(
+        "bbobavoca/print-id",
+        { printId }, // Include the printId in the request body
+        {
+            headers: { Authorization: `Bearer ${token}` }
+        }
+    );
+    return response;
+};
+
+// 프린터기ID 데이터 가져오기
+export const getPrinterId = async (
+    token: string
+): Promise<AxiosResponse<{ printId: string }| null>> => {
+    const response = await bobbaVocaAxios.get(
+        "bbobavoca/get-print-id",
+        {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+    return response;
+};
