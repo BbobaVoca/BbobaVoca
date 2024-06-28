@@ -15,6 +15,7 @@ function PrintSection(props: {
 }) {
     const popupRef = useRef<HTMLDivElement>(null);
     const printerPopupRef = useRef<HTMLDivElement>(null);
+    const fixprinterPopupRef = useRef<HTMLDivElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const token = localStorage.getItem('token');
 
@@ -24,7 +25,8 @@ function PrintSection(props: {
     const [openModal, setOpenModal] = useState(false);
     const [isPrinterPopupVisible, setIsPrinterPopupVisible] = useState(false);
     const [printerInput, setPrinterInput] = useState('');
-
+    const [currentPrinterId, setCurrentPrinterId] = useState('');
+    const [showEditConfirm, setShowEditConfirm] = useState(false);
 
     const [printInfo, setPrintInfo] = useState<VocaPrint>({
         category: props.category,
@@ -70,6 +72,12 @@ function PrintSection(props: {
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState<number>(0);
     const [templateList, setTemplateList] = useState(cardTemplates);
 
+    useEffect(() => {
+        if (isPrinterPopupVisible) {
+            setPrinterInput(currentPrinterId);
+        }
+    }, [isPrinterPopupVisible, currentPrinterId]);
+
     const handleTemplateSelect = (type: number) => {
         setPrintInfo(prevForm => ({
             ...prevForm,
@@ -105,42 +113,41 @@ function PrintSection(props: {
         }));
     };
 
-    // const handlePrint = async () => {
-    //     setOpenModal(true);
-    //     if (token) {
-    //         await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
-    //         props.onClose();
-    //     }
-    // };
 
     const handlePrint = async () => {
         if (token) {
             try {
                 const response = await getPrinterId(token);
-                console.log(response.data);
-                if (!response.data || response.data.printId === ""||response.data.printId.length <0) {
-                    console.log("팝업창 띄우기 시작");
+                if (!response.data || response.data.printId === "" || response.data.printId.length < 0) {
                     setIsPrinterPopupVisible(true);
                 } else {
-                    console.log("이미 주소 존재해서 프린트 요청 보냄");
-                    setOpenModal(true);
-                    await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
-                    props.onClose();
+                    setCurrentPrinterId(response.data.printId);
+                    setShowEditConfirm(true);
                 }
             } catch (error) {
                 console.error('Failed to get Printer ID:', error);
-                setIsPrinterPopupVisible(true); // 에러 발생 시에도 팝업창을 표시
+                setIsPrinterPopupVisible(true);
             }
         }
     };
-    
+    const printFunc = async () => {
+        if (token) {
+            try {
+                await printVocas(token, printInfo.category, printInfo.description, printInfo.nickname, printInfo.type, printInfo.template);
+                console.log('Print job sent successfully');
+            } catch (error) {
+                console.error('Failed to send print job:', error);
+            }
+        }
+    };
+
     const handlePrinterSubmit = async () => {
         if (token) {
             try {
                 await sendPrinterId(token, printerInput);
                 console.log(printerInput);
                 setIsPrinterPopupVisible(false);
-                setPrinterInput('');
+                setCurrentPrinterId(printerInput); // 현재 프린터 ID 업데이트
                 
                 // 프린터 ID 입력 후 printVocas 호출
                 setOpenModal(true);
@@ -151,24 +158,40 @@ function PrintSection(props: {
             }
         }
     };
-    
+    const handlePrintWithoutEdit = async () => {
+        setShowEditConfirm(false);
+        setOpenModal(true);
+        await printFunc();
+        props.onClose();
+    };
+
+
+
+    const handleEditConfirm = () => {
+        console.log("수정하도록 하는 함수 진입")
+        setShowEditConfirm(false);
+        setIsPrinterPopupVisible(true);
+    };
 
     useEffect(() => {
         const handleOutsideClick = (event: MouseEvent) => {
             if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
                 if (!printerPopupRef.current || (printerPopupRef.current && !printerPopupRef.current.contains(event.target as Node))) {
-                    props.onClose();
+                    if (!fixprinterPopupRef.current || (fixprinterPopupRef.current && !fixprinterPopupRef.current.contains(event.target as Node))) {
+                        props.onClose();
+                    }
                 }
+                
             }
         };
-    
+
         document.addEventListener('mousedown', handleOutsideClick);
-    
+
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
     }, [props.onClose]);
-    
+
 
 
 
@@ -303,9 +326,9 @@ function PrintSection(props: {
             {isPrinterPopupVisible && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50" ref={printerPopupRef}>
                     <div className="bg-white rounded-lg p-5 shadow-lg">
-                        <h2 className="text-xl font-semibold mb-4">연결된 프린터기가 없습니다<br></br>프린터기 ID를 입력해주세요!</h2>
+                        <h2 className="text-xl font-semibold mb-4">프린터 ID를 입력해주세요</h2>
                         <input
-                            type="email"
+                            type="text"
                             className="border rounded-md p-2 w-full mb-4"
                             value={printerInput}
                             onChange={(e) => setPrinterInput(e.target.value)}
@@ -322,6 +345,28 @@ function PrintSection(props: {
                                 onClick={handlePrinterSubmit}
                             >
                                 확인
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showEditConfirm && (
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50" ref={fixprinterPopupRef}>
+                    <div className="bg-white rounded-lg p-5 shadow-lg">
+                        <h2 className="text-xl font-semibold mb-4">현재 프린터 ID: <br></br><br></br>{currentPrinterId}</h2><br></br>
+                        <p>프린터 ID를 수정하시겠습니까?</p>
+                        <div className="flex justify-end mt-4">
+                            <button
+                                className="bg-gray-300 text-gray-800 rounded-md py-2 px-4 mr-2"
+                                onClick={handlePrintWithoutEdit}
+                            >
+                                아니오
+                            </button>
+                            <button
+                                className="bg-main text-white rounded-md py-2 px-4"
+                                onClick={handleEditConfirm}
+                            >
+                                예
                             </button>
                         </div>
                     </div>
