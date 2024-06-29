@@ -3,10 +3,10 @@ import { MdPrint } from 'react-icons/md';
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { VocaThemeCard } from "../interfaces/Interfaces";
 import VocaNameCard from "../components/VocaNameCard";
-import { getMyVocaCards } from "../api/bbobavoca/bbobavocaAxios";
+import { getMyVocaCards, getSelectVocas } from "../api/bbobavoca/bbobavocaAxios";
 import VocaCard from "../components/VocaCard";
 import { HiArrowLeft } from "react-icons/hi";
-import { vocaCardsInfoState, widthInfoState } from "../atom";
+import { savedUserState, vocaCardsInfoState, widthInfoState } from "../atom";
 import { useRecoilState } from "recoil";
 import PrintSection from "../components/PrintSection";
 import Loading from "../components/Loading";
@@ -19,8 +19,10 @@ const VocaPage = () => {
     const { category } = useParams() as { category : string };
     const { description } = useParams() as { description : string };
     const { nickname } = useParams() as { nickname: string };
+    const [userInfo, setUserInfo] = useRecoilState(savedUserState);
     const [saveVocaCards, setSaveVocaCards] = useRecoilState(vocaCardsInfoState);
     const [vocaCards, setVocaCards] = useState<VocaThemeCard>();
+
     const [containerWidth, setContainerWidth] = useState<number>(0);
     const [showPopup, setShowPopup] = useState<boolean>(false);
     const [selectedCardIndex, setSelectedCardIndex] = useState<number>(0);
@@ -28,8 +30,9 @@ const VocaPage = () => {
 
     const themeInfo = {
         category: category,
-        description: description
-    }
+        description: description,
+        nickname: nickname
+    };
 
     const handleCardClick = (index: number) => {
         setSelectedCardIndex(index);
@@ -42,11 +45,27 @@ const VocaPage = () => {
 
     const fetchVocaCards = async () => {
         if (token) {
-            const cardResponse = await getMyVocaCards(token, themeInfo.category, themeInfo.description);
-            if (cardResponse && cardResponse.data) {
-                setVocaCards(cardResponse.data);
-                setSaveVocaCards(cardResponse.data);
-                if (!selectedCardInfo) setSelectedCardInfo(cardResponse.data.cards[0]);
+            if (userInfo && userInfo.nickname !== themeInfo.nickname) {
+                console.log(themeInfo.nickname);
+                const cardResponse = await getSelectVocas(themeInfo.category, themeInfo.description, themeInfo.nickname);
+                if (cardResponse && cardResponse.data && cardResponse.data.cards && cardResponse.data.cards.length > 0) {
+                    const responseData = {
+                        category: cardResponse.data.category,
+                        description: cardResponse.data.description,
+                        bgColor: cardResponse.data.bgColor,
+                        cards: cardResponse.data.cards
+                    }
+                    setVocaCards(responseData);
+                    setSaveVocaCards(responseData);
+                    if (!selectedCardInfo) setSelectedCardInfo(responseData.cards[0]);
+                }
+            } else {
+                const cardResponse = await getMyVocaCards(token, themeInfo.category, themeInfo.description);
+                if (cardResponse && cardResponse.data) {
+                    setVocaCards(cardResponse.data);
+                    setSaveVocaCards(cardResponse.data);
+                    if (!selectedCardInfo) setSelectedCardInfo(cardResponse.data.cards[0]);
+                }
             }
         }
     };
