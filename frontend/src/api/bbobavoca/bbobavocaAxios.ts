@@ -69,15 +69,13 @@ export const getAllVocaTheme = async (
 
 // 선택 카드 정보 반환
 export const getSelectVocas = async (
-    token: string,
     category: string,
     description: string,
     nickname: string
 ): Promise<AxiosResponse<AllVocaThemeCard> | null> => {
     const response = await bobbaVocaAxios.post(
         "bbobavoca/select-voca",
-        { category, description, nickname },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { category, description, nickname }
     );
     return response;
 };
