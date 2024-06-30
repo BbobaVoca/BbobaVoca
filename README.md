@@ -1,6 +1,6 @@
 # AI 기반 단어 카드 서비스 뽑아보카👨‍👩‍👧‍👦
 
-### 2024 ESPON Challenge
+### 2024 ESPON Challenge 장려상
 
 <br>
 
