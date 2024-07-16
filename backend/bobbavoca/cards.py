@@ -40,7 +40,7 @@ def get_words(category, description, age, language):
     return answer
 
 def get_english_words(category, description, age):
-    prompt = f"""You are the best children's language education expert. Generate 24 words for a {age}-year-old child to learn that belong to the category "{category}" and have the characteristic "{description}". Separate the words with a '/'.
+    prompt = f"""You are the best children's language education expert. Generate 24 English words for a {age}-year-old child to learn that belong to the category "{category}" and have the characteristic "{description}". Separate the words with a '/'.
     Please only include the words and the separators in the response. Each word must be within 10 characters."""
     answer = get_response(prompt)
 

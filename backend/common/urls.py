@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import RegisterAPIView, AuthAPIView 
+#from .views import RegisterAPIView, AuthAPIView, PrintIdModifyView, CurrentPrintIdView
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from .views import *
 from rest_framework import routers
@@ -20,6 +20,7 @@ urlpatterns = [
     path('list', UserListView.as_view(), name='user-list'),
     path('logout', LogoutView.as_view(), name='logout'),
     path('profile-update', UpdateBabyProfileAPIView.as_view(), name='profile-update'),
+    
     
     path("", include(router.urls)),
     

@@ -346,3 +346,84 @@ class UpdateBabyProfileAPIView(APIView):
         serializer = BabyUpdateSerializer(baby)
         print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+class PrintIdModifyView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # 헤더에서 JWT 토큰 추출
+        token = request.headers.get('Authorization')
+        if not token:
+            return Response({"error": "Authorization token not provided"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # "Bearer " 부분을 제거하여 실제 토큰 값만 추출
+        if not token.startswith('Bearer '):
+            return Response({"error": "Invalid token format"}, status=status.HTTP_401_UNAUTHORIZED)
+        token = token.split('Bearer ')[1]
+
+        # 토큰 디코딩
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token has expired'}, status=status.HTTP_401_UNAUTHORIZED)
+        except jwt.PyJWTError as e:
+            return Response({'error': 'Error in token decoding: ' + str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # 페이로드에서 유저 ID 추출 및 유저 객체 조회
+        user_id = payload.get('user_id')
+        if not user_id:
+            return Response({'error': 'Token payload invalid'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = get_object_or_404(User, pk=user_id)
+
+        printId = request.data.get('printId')
+        user.printId = printId
+        user.save()
+        
+        return Response(
+                {
+                    "message": "success",
+                },
+                status=status.HTTP_200_OK,
+            )
+        
+
+class CurrentPrintIdView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            
+            # 헤더에서 JWT 토큰 추출
+            token = request.headers.get('Authorization', None)
+            if token is None:
+                raise AuthenticationFailed('Authorization token not provided')
+
+            # "Bearer " 부분을 제거하여 실제 토큰 값만 추출
+            if not token.startswith('Bearer '):
+                raise AuthenticationFailed('Invalid token format')
+            token = token.split('Bearer ')[1]
+
+            # 토큰 디코딩
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+
+            # 페이로드에서 유저 ID 추출 및 유저 객체 조회
+            user_id = payload.get('user_id')
+            if not user_id:
+                raise AuthenticationFailed('Token payload invalid')
+
+            user = get_object_or_404(User, pk=user_id)
+            
+            pid= user.printId
+            print(pid)
+            
+            return Response({"printId":pid}, status=status.HTTP_200_OK)
+        except jwt.ExpiredSignatureError:
+            return Response({'error': 'Token has expired'}, status=status.HTTP_401_UNAUTHORIZED)
+        except jwt.PyJWTError as e:
+            return Response({'error': 'Error in token decoding: ' + str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+        except AuthenticationFailed as e:
+            return Response({'error': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+        

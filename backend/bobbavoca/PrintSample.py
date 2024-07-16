@@ -14,7 +14,7 @@ sys.path.append("/home/honglee0317/BobbaVoca/backend/bobbavoca")
 
 from config.my_settings import *
 
-def epson_print(local_file_path = '/home/honglee0317/BobbaVoca/backend/SampleDoc.pdf'):
+def epson_print(DEVICE ='', local_file_path = '/home/honglee0317/BobbaVoca/backend/SampleDoc.pdf'):
 
 
     HOST = 'api.epsonconnect.com'       # You will receive it when the license is issued.
@@ -25,6 +25,7 @@ def epson_print(local_file_path = '/home/honglee0317/BobbaVoca/backend/SampleDoc
 
     AUTH_URI = 'https://' + HOST + '/api/1/printing/oauth2/auth/token?subject=printer'
     CLIENT_ID = '0f5a1385176540fd82b6eb9ed0bdba57'
+    #CLIENT_ID = ''
     SECRET = epson_key
     DEVICE = epson_addr
 

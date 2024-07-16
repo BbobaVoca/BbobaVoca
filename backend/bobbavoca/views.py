@@ -474,7 +474,7 @@ class CreateTemplateView(APIView):
         # 유저의 해당 카테고리 조회
         category = get_object_or_404(Category, user=user, name=category_name, description=description)
 
-
+        print("ㄱrrr:",request.data)
         # 카드와 포스터의 레이아웃 설정
         if type == 0:  # 카드
             title_margin = 0
@@ -586,8 +586,9 @@ class CreateTemplateView(APIView):
 
         image_url = request.build_absolute_uri(settings.MEDIA_URL + filename)
         
-        
-        epson_print(filepath)
+        printId = user.printId
+        print("printId:", printId)
+        epson_print(printId, filepath)
         
         return Response({"message": "Image created successfully", "image_url": image_url}, status=status.HTTP_200_OK)
     
@@ -713,3 +714,44 @@ class CreateTimelineView(APIView):
             response_msg = "Message created successfully."
 
         return Response({"message": response_msg}, status=status.HTTP_201_CREATED)
+    
+    
+class SelectCategoriesView(APIView):
+
+    def post(self, request):
+        # 요청 본문에서 데이터 추출
+        category_name = request.data.get('category', '')
+        description = request.data.get('description', '')
+        username = request.data.get('nickname', '')
+        
+        print("request:", request.data)
+
+        print("user", username)
+        # 사용자 확인
+        user = get_object_or_404(User, nickname=username)
+
+        # 카테고리 필터링
+        categories = Category.objects.filter(name__icontains=category_name, description__icontains=description, user=user)
+
+        # 카테고리 및 카드 시리얼라이즈
+        response_data = []
+        for category in categories:
+            category_data = {
+                "category": category.name,
+                "description": category.description,
+                "bgColor": category.bgColor,
+                "username": username,
+                "cards": []
+            }
+            cards = category.cards.all()
+            for card in cards:
+                card_data = {
+                    "src": card.src,
+                    "kor": card.kor,
+                    "other": card.other,
+                    "example": card.example
+                }
+                category_data["cards"].append(card_data)
+            response_data.append(category_data)
+            print("response:",response_data)
+        return Response(response_data, status=200)
